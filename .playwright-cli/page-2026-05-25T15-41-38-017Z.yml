@@ -1,0 +1,373 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "Về đầu trang" [ref=e6] [cursor=pointer]:
+        - /url: "#"
+        - img [ref=e8]
+        - generic [ref=e12]:
+          - text: Chương 4 MLN
+          - generic [ref=e13]: Dân chủ và Nhà nước
+      - navigation [ref=e14]:
+        - link "Tổng quan" [ref=e15] [cursor=pointer]:
+          - /url: "#tong-quan"
+        - link "Bài học" [ref=e16] [cursor=pointer]:
+          - /url: "#bai-hoc"
+        - link "So sánh" [ref=e17] [cursor=pointer]:
+          - /url: "#so-sanh"
+        - link "Việt Nam" [ref=e18] [cursor=pointer]:
+          - /url: "#viet-nam"
+        - link "Luyện tập" [ref=e19] [cursor=pointer]:
+          - /url: "#luyen-tap"
+        - link "Game" [ref=e20] [cursor=pointer]:
+          - /url: "#game"
+      - button "Mở trợ lý AI" [ref=e22]:
+        - img [ref=e23]
+        - generic [ref=e26]: Hỏi AI
+  - main [ref=e27]:
+    - generic [ref=e28]:
+      - img "Tòa nhà Quốc hội Việt Nam" [ref=e29]
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - img [ref=e35]
+          - text: Chủ nghĩa xã hội khoa học
+        - heading "Dân chủ XHCN và Nhà nước XHCN" [level=1] [ref=e38]:
+          - text: Dân chủ XHCN
+          - generic [ref=e39]: và Nhà nước XHCN
+        - paragraph [ref=e40]: "Một trang học trực quan cho Chương 4: hiểu khái niệm, nắm bản chất, phân biệt dân chủ với nhà nước, và biết cách liên hệ Việt Nam khi làm bài."
+        - generic [ref=e41]:
+          - link "Học theo 3 phần" [ref=e42] [cursor=pointer]:
+            - /url: "#bai-hoc"
+            - text: Học theo 3 phần
+            - img [ref=e43]
+          - link "Luyện trả lời" [ref=e46] [cursor=pointer]:
+            - /url: "#luyen-tap"
+            - text: Luyện trả lời
+            - img [ref=e47]
+    - generic [ref=e51]:
+      - generic [ref=e52]:
+        - paragraph [ref=e53]: Tổng quan
+        - heading "Nhìn một lần là thấy mạch chương" [level=2] [ref=e54]
+        - paragraph [ref=e55]: "Chương 4 xoay quanh một câu hỏi lớn: nhân dân làm chủ bằng cách nào, và nhà nước tổ chức quyền làm chủ đó ra sao?"
+      - generic [ref=e56]:
+        - article [ref=e57]:
+          - img [ref=e59]
+          - paragraph [ref=e62]: Chủ đề
+          - heading "Dân chủ XHCN" [level=3] [ref=e63]
+          - paragraph [ref=e64]: Dân chủ là quyền lực thuộc về nhân dân, được tổ chức trong chế độ xã hội chủ nghĩa.
+        - article [ref=e65]:
+          - img [ref=e67]
+          - paragraph [ref=e69]: Thiết chế
+          - heading "Nhà nước XHCN" [level=3] [ref=e70]
+          - paragraph [ref=e71]: Công cụ tổ chức quyền lực nhân dân, quản lý xã hội và xây dựng đời sống mới.
+        - article [ref=e72]:
+          - img [ref=e74]
+          - paragraph [ref=e78]: Trọng tâm Việt Nam
+          - heading "Pháp quyền XHCN" [level=3] [ref=e79]
+          - paragraph [ref=e80]: Nhà nước của nhân dân, do nhân dân, vì nhân dân dưới sự lãnh đạo của Đảng.
+        - article [ref=e81]:
+          - img [ref=e83]
+          - paragraph [ref=e87]: Cách học
+          - heading "Bản chất → chức năng" [level=3] [ref=e88]
+          - paragraph [ref=e89]: Nắm khái niệm, bản chất, chức năng, rồi liên hệ xây dựng nhà nước ở Việt Nam.
+      - generic [ref=e90]:
+        - generic [ref=e92]:
+          - img [ref=e94]
+          - generic [ref=e99]:
+            - paragraph [ref=e100]: Công thức nhớ
+            - heading "Dân chủ là mục tiêu, nhà nước là công cụ tổ chức thực hiện" [level=3] [ref=e101]
+            - paragraph [ref=e102]: "Nếu nhớ được câu này, bạn sẽ dễ xử lý hầu hết câu hỏi của chương: dân chủ nói về quyền làm chủ; nhà nước nói về thiết chế bảo đảm quyền làm chủ."
+        - generic [ref=e103]:
+          - generic [ref=e104]:
+            - img [ref=e106]
+            - generic [ref=e111]:
+              - heading "Nhân dân là chủ" [level=3] [ref=e112]
+              - paragraph [ref=e113]: Mọi quyền lực thuộc về nhân dân; nhân dân tham gia xây dựng, kiểm tra và giám sát quyền lực.
+          - generic [ref=e114]:
+            - img [ref=e116]
+            - generic [ref=e119]:
+              - heading "Pháp luật là khuôn khổ" [level=3] [ref=e120]
+              - paragraph [ref=e121]: Dân chủ cần được thể chế hóa bằng Hiến pháp, pháp luật, kỷ luật và kỷ cương.
+          - generic [ref=e122]:
+            - img [ref=e124]
+            - generic [ref=e127]:
+              - heading "Đảng lãnh đạo" [level=3] [ref=e128]
+              - paragraph [ref=e129]: Sự lãnh đạo của Đảng là điều kiện chính trị để định hướng quá trình xây dựng dân chủ XHCN.
+          - generic [ref=e130]:
+            - img [ref=e132]
+            - generic [ref=e136]:
+              - heading "Nhà nước phục vụ" [level=3] [ref=e137]
+              - paragraph [ref=e138]: Bộ máy nhà nước phải trong sạch, hiệu lực, hiệu quả, gần dân và chịu trách nhiệm trước nhân dân.
+    - generic [ref=e140]:
+      - generic [ref=e141]:
+        - paragraph [ref=e142]: Bài học
+        - heading "Ba phần trọng tâm của Chương 4" [level=2] [ref=e143]
+        - paragraph [ref=e144]: "Chọn từng phần để học theo kiểu: luận điểm chính, ý cần ghi nhớ, mẹo triển khai khi đi thi."
+      - generic [ref=e145]:
+        - generic [ref=e146]:
+          - button "Phần I Dân chủ và dân chủ xã hội chủ nghĩa" [ref=e147]:
+            - generic [ref=e148]:
+              - img [ref=e150]
+              - generic [ref=e155]:
+                - generic [ref=e156]: Phần I
+                - generic [ref=e157]: Dân chủ và dân chủ xã hội chủ nghĩa
+            - img [ref=e158]
+          - button "Phần II Nhà nước xã hội chủ nghĩa" [ref=e160]:
+            - generic [ref=e161]:
+              - img [ref=e163]
+              - generic [ref=e167]:
+                - generic [ref=e168]: Phần II
+                - generic [ref=e169]: Nhà nước xã hội chủ nghĩa
+            - img [ref=e170]
+          - button "Phần III Dân chủ và nhà nước pháp quyền XHCN ở Việt Nam" [ref=e172]:
+            - generic [ref=e173]:
+              - img [ref=e175]
+              - generic [ref=e181]:
+                - generic [ref=e182]: Phần III
+                - generic [ref=e183]: Dân chủ và nhà nước pháp quyền XHCN ở Việt Nam
+            - img [ref=e184]
+        - article [ref=e186]:
+          - generic [ref=e187]:
+            - generic [ref=e188]:
+              - img "Tòa nhà Quốc hội Việt Nam" [ref=e189]
+              - generic [ref=e191]:
+                - paragraph [ref=e192]: Phần I
+                - heading "Dân chủ và dân chủ xã hội chủ nghĩa" [level=3] [ref=e193]
+            - generic [ref=e194]:
+              - paragraph [ref=e195]: Dân chủ được hiểu là quyền lực thuộc về nhân dân. Trong chủ nghĩa xã hội, dân chủ không chỉ là quyền chính trị mà còn là điều kiện để giải phóng con người, phát triển xã hội và bảo đảm nhân dân làm chủ.
+              - generic [ref=e196]:
+                - generic [ref=e197]:
+                  - img [ref=e198]
+                  - generic [ref=e201]: Dân chủ là một giá trị xã hội phản ánh quyền cơ bản của con người.
+                - generic [ref=e202]:
+                  - img [ref=e203]
+                  - generic [ref=e206]: Dân chủ là một hình thức tổ chức nhà nước của giai cấp cầm quyền.
+                - generic [ref=e207]:
+                  - img [ref=e208]
+                  - generic [ref=e211]: Dân chủ là nguyên tắc tổ chức, quản lý xã hội, gắn với kỷ luật và pháp luật.
+                - generic [ref=e212]:
+                  - img [ref=e213]
+                  - generic [ref=e216]: Dân chủ xã hội chủ nghĩa mang bản chất của giai cấp công nhân, đồng thời hướng tới lợi ích của nhân dân lao động.
+              - generic [ref=e217]:
+                - img [ref=e218]
+                - generic [ref=e222]: "Khi trả lời câu hỏi về bản chất dân chủ XHCN, hãy triển khai theo ba mặt: chính trị, kinh tế, tư tưởng - văn hóa - xã hội."
+    - generic [ref=e224]:
+      - generic [ref=e225]:
+        - paragraph [ref=e226]: So sánh
+        - 'heading "Đừng học lẫn: dân chủ và nhà nước khác nhau ở đâu?" [level=2] [ref=e227]'
+      - generic [ref=e228]:
+        - generic [ref=e229]:
+          - generic [ref=e230]: Tiêu chí
+          - generic [ref=e231]: Dân chủ XHCN
+          - generic [ref=e232]: Nhà nước XHCN
+        - generic [ref=e233]:
+          - generic [ref=e234]: Trọng tâm
+          - generic [ref=e235]: Quyền làm chủ của nhân dân trong đời sống chính trị, kinh tế, văn hóa, xã hội.
+          - generic [ref=e236]: Thiết chế tổ chức và bảo đảm thực hiện quyền làm chủ đó.
+        - generic [ref=e237]:
+          - generic [ref=e238]: Bản chất
+          - generic [ref=e239]: Mang bản chất giai cấp công nhân, hướng tới lợi ích của nhân dân lao động.
+          - generic [ref=e240]: Là công cụ quyền lực của nhân dân, đặt dưới sự lãnh đạo của Đảng.
+        - generic [ref=e241]:
+          - generic [ref=e242]: Cách biểu hiện
+          - generic [ref=e243]: Bầu cử, tham gia quản lý, giám sát, phản biện, thụ hưởng quyền con người.
+          - generic [ref=e244]: Hiến pháp, pháp luật, bộ máy công quyền, chính sách, quản lý xã hội.
+        - generic [ref=e245]:
+          - generic [ref=e246]: Điểm cần nhớ
+          - generic [ref=e247]: Không tách rời kỷ luật, kỷ cương và trách nhiệm công dân.
+          - generic [ref=e248]: Không được quan liêu, xa dân, tham nhũng, lãng phí.
+    - generic [ref=e251]:
+      - generic [ref=e252]:
+        - paragraph [ref=e253]: Liên hệ Việt Nam
+        - 'heading "Nhà nước pháp quyền XHCN: học để biết cách liên hệ" [level=2] [ref=e254]'
+        - paragraph [ref=e255]: Khi làm bài, phần liên hệ Việt Nam nên đi từ lịch sử hình thành dân chủ, đến yêu cầu xây dựng nhà nước pháp quyền, rồi kết bằng trách nhiệm công dân.
+        - generic [ref=e256]:
+          - img [ref=e257]
+          - paragraph [ref=e260]: "Câu chốt: Quyền lực nhà nước thuộc về nhân dân, được tổ chức bằng pháp luật, dưới sự lãnh đạo của Đảng, nhằm phục vụ nhân dân."
+      - generic [ref=e261]:
+        - article [ref=e262]:
+          - generic [ref=e263]:
+            - img [ref=e265]
+            - paragraph [ref=e267]: "1945"
+          - generic [ref=e268]:
+            - heading "Xác lập chế độ dân chủ nhân dân" [level=3] [ref=e269]
+            - paragraph [ref=e270]: Sau Cách mạng Tháng Tám, nhân dân trở thành chủ thể của nhà nước mới.
+        - article [ref=e271]:
+          - generic [ref=e272]:
+            - img [ref=e274]
+            - paragraph [ref=e276]: "1986"
+          - generic [ref=e277]:
+            - heading "Đổi mới và phát huy dân chủ" [level=3] [ref=e278]
+            - paragraph [ref=e279]: Đại hội VI nhấn mạnh phát huy dân chủ như động lực phát triển đất nước.
+        - article [ref=e280]:
+          - generic [ref=e281]:
+            - img [ref=e283]
+            - paragraph [ref=e285]: Hiện nay
+          - generic [ref=e286]:
+            - heading "Xây dựng Nhà nước pháp quyền XHCN" [level=3] [ref=e287]
+            - paragraph [ref=e288]: Hoàn thiện pháp luật, kiểm soát quyền lực, cải cách hành chính và phòng chống tham nhũng.
+        - generic [ref=e289]:
+          - generic [ref=e290]:
+            - img [ref=e292]
+            - heading "4 hướng xây dựng cần nhớ" [level=3] [ref=e296]
+          - generic [ref=e297]:
+            - generic [ref=e298]:
+              - img [ref=e299]
+              - generic [ref=e302]: Hoàn thiện pháp luật và cơ chế kiểm soát quyền lực.
+            - generic [ref=e303]:
+              - img [ref=e304]
+              - generic [ref=e307]: Cải cách hành chính, xây dựng bộ máy tinh gọn, hiệu quả.
+            - generic [ref=e308]:
+              - img [ref=e309]
+              - generic [ref=e312]: Nâng cao chất lượng cán bộ, công chức.
+            - generic [ref=e313]:
+              - img [ref=e314]
+              - generic [ref=e317]: Phòng, chống tham nhũng, lãng phí, thực hành tiết kiệm.
+    - generic [ref=e319]:
+      - generic [ref=e320]:
+        - paragraph [ref=e321]: Luyện tập
+        - heading "Từ ghi nhớ đến trả lời được câu hỏi" [level=2] [ref=e322]
+        - paragraph [ref=e323]: Phần này gom dàn ý và câu hỏi tự kiểm tra để người học chuyển kiến thức thành bài làm.
+      - generic [ref=e324]:
+        - generic [ref=e325]:
+          - generic [ref=e326]:
+            - img [ref=e328]
+            - heading "Dàn ý trả lời 5 bước" [level=3] [ref=e331]
+          - generic [ref=e332]:
+            - generic [ref=e333]:
+              - generic [ref=e334]: "1"
+              - paragraph [ref=e335]: "Mở bài: nêu dân chủ XHCN và nhà nước XHCN là hai nội dung gắn bó trong thời kỳ quá độ."
+            - generic [ref=e336]:
+              - generic [ref=e337]: "2"
+              - paragraph [ref=e338]: "Thân bài 1: giải thích dân chủ là quyền lực thuộc về nhân dân và bản chất dân chủ XHCN."
+            - generic [ref=e339]:
+              - generic [ref=e340]: "3"
+              - paragraph [ref=e341]: "Thân bài 2: trình bày sự ra đời, bản chất, chức năng của nhà nước XHCN."
+            - generic [ref=e342]:
+              - generic [ref=e343]: "4"
+              - paragraph [ref=e344]: "Thân bài 3: liên hệ Việt Nam với Nhà nước pháp quyền XHCN của nhân dân, do nhân dân, vì nhân dân."
+            - generic [ref=e345]:
+              - generic [ref=e346]: "5"
+              - paragraph [ref=e347]: "Kết bài: khẳng định trách nhiệm công dân trong xây dựng dân chủ, tôn trọng pháp luật, chống quan liêu, tham nhũng."
+        - generic [ref=e348]:
+          - generic [ref=e349]:
+            - img [ref=e351]
+            - heading "Lật câu hỏi ôn tập" [level=3] [ref=e354]
+          - generic [ref=e355]:
+            - button "Dân chủ theo nghĩa khái quát nhất là gì? Là quyền lực thuộc về nhân dân; nhân dân là chủ thể của quyền lực xã hội và quyền lực nhà nước." [ref=e356]:
+              - generic [ref=e357]:
+                - paragraph [ref=e358]: Dân chủ theo nghĩa khái quát nhất là gì?
+                - img [ref=e359]
+              - paragraph [ref=e361]: Là quyền lực thuộc về nhân dân; nhân dân là chủ thể của quyền lực xã hội và quyền lực nhà nước.
+            - button "Vì sao dân chủ XHCN phải gắn với pháp luật?" [ref=e362]:
+              - generic [ref=e363]:
+                - paragraph [ref=e364]: Vì sao dân chủ XHCN phải gắn với pháp luật?
+                - img [ref=e365]
+            - button "Nhà nước XHCN có những chức năng cơ bản nào?" [ref=e367]:
+              - generic [ref=e368]:
+                - paragraph [ref=e369]: Nhà nước XHCN có những chức năng cơ bản nào?
+                - img [ref=e370]
+            - button "Một ý liên hệ trách nhiệm cá nhân khi học chương này?" [ref=e372]:
+              - generic [ref=e373]:
+                - paragraph [ref=e374]: Một ý liên hệ trách nhiệm cá nhân khi học chương này?
+                - img [ref=e375]
+    - generic [ref=e378]:
+      - generic [ref=e379]:
+        - generic [ref=e380]:
+          - paragraph [ref=e381]: Game 3D
+          - heading "Pháp Quyền Quest" [level=2] [ref=e382]
+        - paragraph [ref=e383]: "Một mini game 3D bám sát Chương 4: người chơi chọn cổng đáp án A/B/C, tăng điểm, giữ combo và mở khóa các tinh thể kiến thức về dân chủ, nhà nước và pháp quyền."
+      - generic [ref=e386]:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - img
+                - text: 3D Quiz Arena
+              - heading "Pháp Quyền Quest" [level=3]
+              - paragraph: Bay qua cổng đáp án, sạc năng lượng dân chủ và mở khóa quảng trường pháp quyền.
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                  - generic: Điểm
+                - paragraph: "0"
+              - generic:
+                - generic:
+                  - img
+                  - generic: Thời gian
+                - paragraph: 17s
+              - generic:
+                - generic:
+                  - img
+                  - generic: Năng lượng
+                - paragraph: 18%
+              - generic:
+                - generic:
+                  - img
+                  - generic: Combo
+                - paragraph: x0
+          - generic:
+            - generic:
+              - generic:
+                - img
+                - text: Khởi động
+          - generic:
+            - generic:
+              - generic:
+                - img
+                - text: Điều khiển nhanh
+              - generic:
+                - generic: "A / 1: Cổng A"
+                - generic: "B / 2: Cổng B"
+                - generic: "C / 3: Cổng C"
+            - complementary [ref=e444]:
+              - generic [ref=e445]:
+                - generic [ref=e446]:
+                  - generic [ref=e447]:
+                    - paragraph [ref=e448]: Câu 1/6 · Khái niệm
+                    - heading "Dân chủ theo nghĩa khái quát nhất trong Chương 4 là gì?" [level=3] [ref=e449]
+                  - img [ref=e451]
+                - generic [ref=e455]:
+                  - button "A Quyền lực thuộc về nhân dân" [ref=e456]:
+                    - generic [ref=e457]: A
+                    - generic [ref=e458]: Quyền lực thuộc về nhân dân
+                  - button "B Quyền lực chỉ thuộc bộ máy hành chính" [ref=e459]:
+                    - generic [ref=e460]: B
+                    - generic [ref=e461]: Quyền lực chỉ thuộc bộ máy hành chính
+                  - button "C Một nghi thức bầu chọn hình thức" [ref=e462]:
+                    - generic [ref=e463]: C
+                    - generic [ref=e464]: Một nghi thức bầu chọn hình thức
+  - contentinfo [ref=e408]:
+    - generic [ref=e410]:
+      - generic [ref=e411]:
+        - generic [ref=e412]:
+          - img [ref=e413]
+          - text: Chương 4 MLN
+        - heading "Hiểu dân chủ là hiểu cách quyền lực nhân dân được tổ chức." [level=2] [ref=e415]
+      - generic [ref=e416]:
+        - link "Tổng quan" [ref=e417] [cursor=pointer]:
+          - /url: "#tong-quan"
+          - text: Tổng quan
+          - img [ref=e418]
+        - link "Bài học" [ref=e421] [cursor=pointer]:
+          - /url: "#bai-hoc"
+          - text: Bài học
+          - img [ref=e422]
+        - link "So sánh" [ref=e425] [cursor=pointer]:
+          - /url: "#so-sanh"
+          - text: So sánh
+          - img [ref=e426]
+        - link "Việt Nam" [ref=e429] [cursor=pointer]:
+          - /url: "#viet-nam"
+          - text: Việt Nam
+          - img [ref=e430]
+        - link "Luyện tập" [ref=e433] [cursor=pointer]:
+          - /url: "#luyen-tap"
+          - text: Luyện tập
+          - img [ref=e434]
+        - link "Game" [ref=e437] [cursor=pointer]:
+          - /url: "#game"
+          - text: Game
+          - img [ref=e438]
+  - button "Mở trợ lý AI" [ref=e441]:
+    - img [ref=e442]
