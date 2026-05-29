@@ -11,7 +11,6 @@ import {
   Building2,
   CheckCircle2,
   ChevronRight,
-  CircleHelp,
   ClipboardCheck,
   Clock,
   FileText,
@@ -19,7 +18,6 @@ import {
   Gavel,
   Gamepad2,
   Gauge,
-  GraduationCap,
   Hand,
   Keyboard,
   Landmark,
@@ -44,7 +42,9 @@ import {
 import type { LucideIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { NavLink, Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import * as THREE from "three";
+import EscapeRoomApp from "../components/EscapeRoomApp.jsx";
 import { getChatResponse } from "./lib/gemini";
 
 type Message = {
@@ -52,16 +52,22 @@ type Message = {
   text: string;
 };
 
-type LessonBlock = {
+type LessonSubSection = {
+  id: string;
+  title: string;
+  detail: string;
+  points: string[];
+};
+
+type LessonSection = {
   id: string;
   eyebrow: string;
   title: string;
-  icon: LucideIcon;
+  description: string;
   image: string;
   imageAlt: string;
-  thesis: string;
-  core: string[];
-  examHint: string;
+  icon: LucideIcon;
+  subSections: LessonSubSection[];
 };
 
 type CompareRow = {
@@ -70,18 +76,11 @@ type CompareRow = {
   state: string;
 };
 
-type QuizItem = {
-  question: string;
-  answer: string;
-};
-
 const navItems = [
-  { href: "#tong-quan", label: "Tổng quan" },
-  { href: "#bai-hoc", label: "Bài học" },
-  { href: "#so-sanh", label: "So sánh" },
-  { href: "#viet-nam", label: "Việt Nam" },
-  { href: "#luyen-tap", label: "Luyện tập" },
-  { href: "#game", label: "Game" },
+  { id: "tong-quan", label: "Tổng quan", path: "/tong-quan" },
+  { id: "bai-hoc", label: "Bài học", path: "/bai-hoc" },
+  { id: "viet-nam", label: "Việt Nam", path: "/viet-nam" },
+  { id: "game", label: "Game", path: "/game" },
 ];
 
 const images = {
@@ -97,194 +96,206 @@ const images = {
 
 const overview = [
   {
-    label: "Chủ đề",
-    value: "Dân chủ XHCN",
-    text: "Dân chủ là quyền lực thuộc về nhân dân, được tổ chức trong chế độ xã hội chủ nghĩa.",
-    icon: Vote,
-  },
-  {
-    label: "Thiết chế",
-    value: "Nhà nước XHCN",
-    text: "Công cụ tổ chức quyền lực nhân dân, quản lý xã hội và xây dựng đời sống mới.",
+    label: "Trọng tâm 1",
+    value: "Sự ra đời",
+    text: "Nhà nước XHCN ra đời từ cách mạng XHCN, đáp ứng khát vọng công bằng và bình đẳng.",
     icon: Landmark,
   },
   {
-    label: "Trọng tâm Việt Nam",
-    value: "Pháp quyền XHCN",
-    text: "Nhà nước của nhân dân, do nhân dân, vì nhân dân dưới sự lãnh đạo của Đảng.",
+    label: "Trọng tâm 2",
+    value: "Bản chất 3 phương diện",
+    text: "Chính trị, kinh tế, văn hóa - xã hội tạo nên bản chất nhà nước kiểu mới.",
     icon: Scale,
   },
   {
-    label: "Cách học",
-    value: "Bản chất → chức năng",
-    text: "Nắm khái niệm, bản chất, chức năng, rồi liên hệ xây dựng nhà nước ở Việt Nam.",
-    icon: Target,
+    label: "Trọng tâm 3",
+    value: "Chức năng",
+    text: "Đối nội, đối ngoại và chức năng giai cấp, xã hội trong quản lý đất nước.",
+    icon: Gavel,
+  },
+  {
+    label: "Trọng tâm 4",
+    value: "Quan hệ dân chủ - nhà nước",
+    text: "Dân chủ là nền tảng, nhà nước là công cụ thể chế hóa và bảo vệ quyền làm chủ.",
+    icon: Vote,
   },
 ];
 
-const lessonBlocks: LessonBlock[] = [
+const lessonSections: LessonSection[] = [
   {
-    id: "dan-chu",
-    eyebrow: "Phần I",
-    title: "Dân chủ và dân chủ xã hội chủ nghĩa",
-    icon: Users,
+    id: "phan-1",
+    eyebrow: "Phần 1",
+    title: "Sự ra đời, bản chất, chức năng của nhà nước XHCN",
+    description:
+      "Tập trung vào nguồn gốc - hình thức ra đời, bản chất 3 phương diện và hệ chức năng đối nội/đối ngoại, giai cấp/xã hội.",
     image: images.assembly,
     imageAlt: "Tòa nhà Quốc hội Việt Nam",
-    thesis:
-      "Dân chủ được hiểu là quyền lực thuộc về nhân dân. Trong chủ nghĩa xã hội, dân chủ không chỉ là quyền chính trị mà còn là điều kiện để giải phóng con người, phát triển xã hội và bảo đảm nhân dân làm chủ.",
-    core: [
-      "Dân chủ là một giá trị xã hội phản ánh quyền cơ bản của con người.",
-      "Dân chủ là một hình thức tổ chức nhà nước của giai cấp cầm quyền.",
-      "Dân chủ là nguyên tắc tổ chức, quản lý xã hội, gắn với kỷ luật và pháp luật.",
-      "Dân chủ xã hội chủ nghĩa mang bản chất của giai cấp công nhân, đồng thời hướng tới lợi ích của nhân dân lao động.",
+    icon: Landmark,
+    subSections: [
+      {
+        id: "phan-1-a",
+        title: "a) Sự ra đời của nhà nước XHCN",
+        detail:
+          "Khát vọng về một xã hội công bằng, bình đẳng, không có áp bức bóc lột đã có từ lâu. Nhà nước XHCN ra đời là kết quả tất yếu của cách mạng XHCN do giai cấp công nhân và nhân dân lao động tiến hành dưới sự lãnh đạo của Đảng Cộng sản; đồng thời là kết quả của đấu tranh giai cấp gay gắt giữa giai cấp công nhân và giai cấp tư sản khi chủ nghĩa tư bản phát triển đến trình độ nhất định.",
+        points: [
+          "Nguồn gốc và nguyên nhân: khát vọng xã hội công bằng, bình đẳng, không có áp bức bóc lột.",
+          "Sự ra đời gắn với cách mạng XHCN và cuộc đấu tranh giai cấp giữa công nhân và tư sản.",
+          "Hình thức ra đời: bạo lực cách mạng hoặc hòa bình, tùy điều kiện lịch sử cụ thể.",
+          "Khái niệm: nhà nước kiểu mới mang bản chất giai cấp công nhân, đại diện lợi ích nhân dân lao động và toàn thể nhân dân, có sứ mệnh xây dựng thành công CNXH, đưa nhân dân lao động lên địa vị làm chủ trên mọi mặt đời sống.",
+          "Nhà nước XHCN đầu tiên được thiết lập sau Cách mạng Tháng Mười Nga (1917).",
+          "Ví dụ Việt Nam: Nhà nước Việt Nam Dân chủ Cộng hòa ra đời từ Cách mạng Tháng Tám 1945, đập tan ách thống trị thực dân, phát xit và phong kiến, thiết lập chính quyền của nhân dân, do nhân dân, vì nhân dân.",
+        ],
+      },
+      {
+        id: "phan-1-b",
+        title: "b) Bản chất của nhà nước XHCN",
+        detail:
+          "Nhà nước XHCN là nhà nước kiểu mới, có bản chất khác hẳn các kiểu nhà nước bóc lột trước đây, thể hiện sâu sắc ở ba phương diện: chính trị, kinh tế, văn hóa - xã hội.",
+        points: [
+          "Về chính trị: mang bản chất giai cấp công nhân, thực hiện quyền lực của nhân dân, dựa trên liên minh công - nông - trí thức; nhân dân là chủ thể quyền lực thông qua dân chủ trực tiếp và đại diện.",
+          "Vận dụng thực tế: quyền lực nhà nước thống nhất, thuộc về nhân dân; người dân bầu cử Quốc hội, HĐND và thực hiện phương châm 'Dân biết, dân bàn, dân làm, dân kiểm tra, dân giám sát, dân thụ hưởng'.",
+          "Về kinh tế: cơ sở là chế độ sở hữu xã hội (công hữu) về tư liệu sản xuất chủ yếu; nhà nước tổ chức, thiết lập và phát triển quan hệ sản xuất mới, xóa bỏ áp bức bóc lột, hướng tới công bằng và nâng cao đời sống.",
+          "Vận dụng thực tế: nhà nước giữ vai trò chủ đạo ở các ngành then chốt, điều tiết vĩ mô, bảo đảm an ninh kinh tế và an sinh xã hội.",
+          "Về văn hóa - xã hội: xây dựng trên nền tảng ly luan Mac - Lenin và gia tri van hoa tien tien; thu hep bat binh dang, huong toi xa hoi hoa hop, phat trien con nguoi toan dien.",
+          "Vận dụng thực tế: chương trình xóa đói giảm nghèo, hỗ trợ vùng dân tộc thiểu số, bảo hiểm y tế cho trẻ em dưới 6 tuổi và người nghèo.",
+        ],
+      },
+      {
+        id: "phan-1-c",
+        title: "c) Chức năng của nhà nước XHCN",
+        detail:
+          "Chức năng của nhà nước XHCN rất rộng lớn, được phân loại theo phạm vi tác động và theo tính chất quyền lực nhà nước.",
+        points: [
+          "Căn cứ phạm vi tác động: đối nội (quản lý kinh tế, chính trị, văn hóa, giáo dục, y tế, an ninh quốc phòng) và đối ngoại (bảo vệ độc lập, chủ quyền, toàn vẹn lãnh thổ; hợp tác quốc tế, hữu nghị, cùng phát triển).",
+          "Vận dụng thực tế: đối nội ban hành Luật Đất đai, Luật Đầu tư; đối ngoại tham gia LHQ, ASEAN, ký FTA và thực hiện chính sách quốc phòng '4 không'.",
+          "Căn cứ tính chất quyền lực: chức năng giai cấp (trấn áp thế lực phản động, tội phạm xâm phạm an ninh quốc gia, trật tự xã hội).",
+          "Chức năng xã hội (tổ chức và xây dựng): trọng tâm quản lý kinh tế, phát triển văn hóa, giáo dục, y tế, chăm lo đời sống nhân dân; V.I. Lenin nhấn mạnh vai trò quản lý kinh tế, tổ chức xã hội mới.",
+          "Vận dụng thực tế: xử lý các đại an tham nhung, buon lau; dau tu ha tang, san bay, benh vien, truong hoc; trien khai tiem chung mo rong.",
+        ],
+      },
     ],
-    examHint:
-      "Khi trả lời câu hỏi về bản chất dân chủ XHCN, hãy triển khai theo ba mặt: chính trị, kinh tế, tư tưởng - văn hóa - xã hội.",
   },
   {
-    id: "nha-nuoc",
-    eyebrow: "Phần II",
-    title: "Nhà nước xã hội chủ nghĩa",
-    icon: Building2,
+    id: "phan-2",
+    eyebrow: "Phần 2",
+    title: "Mối quan hệ giữa dân chủ XHCN và nhà nước XHCN",
+    description:
+      "Dân chủ là nền tảng để xây dựng nhà nước; nhà nước là công cụ thể chế hóa và bảo vệ quyền làm chủ.",
     image: images.hall,
     imageAlt: "Hội trường Diên Hồng",
-    thesis:
-      "Nhà nước xã hội chủ nghĩa ra đời từ cách mạng của giai cấp công nhân và nhân dân lao động. Đây là thiết chế thể hiện, bảo vệ và tổ chức thực hiện quyền làm chủ của nhân dân.",
-    core: [
-      "Bản chất chính trị: đặt dưới sự lãnh đạo của giai cấp công nhân thông qua Đảng Cộng sản.",
-      "Bản chất xã hội: đại diện cho lợi ích của nhân dân lao động và toàn xã hội.",
-      "Chức năng đối nội: tổ chức xây dựng xã hội mới, quản lý kinh tế, văn hóa, xã hội.",
-      "Chức năng đối ngoại: bảo vệ Tổ quốc, mở rộng quan hệ hợp tác, giữ hòa bình và phát triển.",
+    icon: Users,
+    subSections: [
+      {
+        id: "phan-2-a",
+        title: "a) Dân chủ là cơ sở, nền tảng",
+        detail:
+          "Dân chủ XHCN là cơ sở, nền tảng cho việc xây dựng và hoạt động của nhà nước XHCN; bảo đảm quyền lực thuộc về nhân dân và tạo điều kiện để nhân dân thực hiện quyền làm chủ trên mọi lĩnh vực của đời sống xã hội.",
+        points: [
+          "Dân chủ XHCN bảo đảm quyền lực thuộc về nhân dân; người dân tham gia quản lý nhà nước và xã hội trực tiếp hoặc gián tiếp qua bầu cử, ứng cử công bằng, bình đẳng.",
+          "The hien ban chat tien bo cua dan chu XHCN: moi quyen luc thuoc ve nhan dan.",
+          "Ví dụ: người dân bầu cử Quốc hội và HĐND các cấp; góp ý sửa đổi Hiến pháp, luật pháp qua cổng thông tin, mạng xã hội, tiếp xúc cử tri.",
+          "Dân chủ là nền tảng để xây dựng nhà nước của dân, do dân, vì dân; nhà nước phát huy trí tuệ, sức mạnh và sự sáng tạo của toàn dân.",
+          "Thông qua dân chủ, nhà nước lắng nghe ý kiến nhân dân, điều chỉnh chính sách phù hợp thực tiễn, tăng đồng thuận xã hội.",
+          "Dân chủ giúp kiểm soát quyền lực nhà nước thông qua giám sát và phản biện xã hội; ngăn tham nhũng, lạm quyền, quan liêu, tha hóa quyền lực.",
+          "Nếu vi phạm dân chủ thì quyền lực của nhân dân dễ bị biến thành quyền lực của một nhóm người, dẫn đến chuyên quyền, độc đoán hoặc dân chủ hình thức.",
+          "Bối cảnh hiện nay: yêu cầu minh bạch, trách nhiệm giải trình cao hơn; đồng thời xuất hiện thông tin sai lệch, lợi dụng dân chủ gây mất ổn định, cần nâng cao nhan thuc va trach nhiem cong dan.",
+        ],
+      },
+      {
+        id: "phan-2-b",
+        title: "b) Nhà nước là công cụ thực thi",
+        detail:
+          "Nhà nước XHCN trở thành công cụ quan trọng để thực thi quyền làm chủ của nhân dân, thông qua thể chế hóa bằng pháp luật, bảo vệ quyền và tổ chức quản lý xã hội.",
+        points: [
+          "Nhà nước thể chế hóa ý chí nhân dân thành pháp luật, quy định rõ quyền và nghĩa vụ công dân.",
+          "Chính sách, pháp luật hướng đến phục vụ lợi ích nhân dân, bảo vệ quyền tự do, dân chủ hợp pháp và tạo hành lang tham gia quản lý xã hội.",
+          "Ví dụ: Hiến pháp 2013 quy định quyền con người, quyền và nghĩa vụ cơ bản của công dân.",
+          "Nhà nước bảo vệ quyền và lợi ích chính đáng của nhân dân; sử dụng pháp luật và bộ máy quản lý để giữ gìn an ninh, trật tự xã hội.",
+          "Nhà nước tổ chức và quản lý xã hội: phát triển kinh tế, văn hóa, giáo dục, an sinh; nâng cao đời sống vật chất, tinh thần.",
+          "Nhà nước không ngừng mở rộng dân chủ, hoàn thiện hình thức đại diện và tăng tham gia của nhân dân.",
+          "Neu nha nuoc danh mat ban chat thi nen dan chu bi thu hep, dan chu hinh thuc, chuyen che doc tai.",
+          "Y nghia: bao dam quyen luc thuc su thuoc ve nhan dan, tao dong luc phat trien, cung co niem tin va giu vung on dinh chinh tri.",
+        ],
+      },
     ],
-    examHint:
-      "Câu hỏi về nhà nước XHCN thường cần đủ ba ý: sự ra đời, bản chất, chức năng.",
-  },
-  {
-    id: "viet-nam",
-    eyebrow: "Phần III",
-    title: "Dân chủ và nhà nước pháp quyền XHCN ở Việt Nam",
-    icon: Gavel,
-    image: images.constitution,
-    imageAlt: "Tòa nhà Quốc hội Việt Nam nhìn từ quảng trường",
-    thesis:
-      "Ở Việt Nam, dân chủ xã hội chủ nghĩa gắn với xây dựng Nhà nước pháp quyền xã hội chủ nghĩa của nhân dân, do nhân dân, vì nhân dân. Quyền lực nhà nước là thống nhất, có phân công, phối hợp và kiểm soát.",
-    core: [
-      "Mở rộng dân chủ phải đi đôi với kỷ luật, kỷ cương và pháp luật.",
-      "Nhà nước quản lý xã hội bằng Hiến pháp, pháp luật và phục vụ nhân dân.",
-      "Xây dựng đội ngũ cán bộ, công chức có phẩm chất, năng lực, trách nhiệm.",
-      "Phòng, chống tham nhũng, lãng phí là nhiệm vụ cấp bách và lâu dài.",
-    ],
-    examHint:
-      "Liên hệ Việt Nam nên nhấn mạnh: nhân dân là chủ thể quyền lực, Đảng lãnh đạo, Nhà nước quản lý bằng pháp luật.",
   },
 ];
 
 const principles = [
   {
-    title: "Nhân dân là chủ",
-    text: "Mọi quyền lực thuộc về nhân dân; nhân dân tham gia xây dựng, kiểm tra và giám sát quyền lực.",
+    title: "Dân chủ là nền tảng",
+    text: "Dân chủ XHCN bảo đảm quyền lực thuộc về nhân dân trong mọi lĩnh vực.",
     icon: Hand,
   },
   {
-    title: "Pháp luật là khuôn khổ",
-    text: "Dân chủ cần được thể chế hóa bằng Hiến pháp, pháp luật, kỷ luật và kỷ cương.",
+    title: "Pháp luật là công cụ",
+    text: "Nhà nước thể chế hóa ý chí nhân dân thành pháp luật để bảo vệ quyền và nghĩa vụ.",
     icon: FileText,
   },
   {
-    title: "Đảng lãnh đạo",
-    text: "Sự lãnh đạo của Đảng là điều kiện chính trị để định hướng quá trình xây dựng dân chủ XHCN.",
+    title: "Kiểm soát quyền lực",
+    text: "Giám sát xã hội giúp ngăn tham nhũng, lạm quyền và quan liêu.",
     icon: ShieldCheck,
   },
   {
-    title: "Nhà nước phục vụ",
-    text: "Bộ máy nhà nước phải trong sạch, hiệu lực, hiệu quả, gần dân và chịu trách nhiệm trước nhân dân.",
+    title: "Mở rộng dân chủ",
+    text: "Hoàn thiện cơ chế đại diện, tăng tham gia và đồng thuận xã hội.",
     icon: ClipboardCheck,
   },
 ];
 
 const compareRows: CompareRow[] = [
   {
-    label: "Trọng tâm",
-    democracy: "Quyền làm chủ của nhân dân trong đời sống chính trị, kinh tế, văn hóa, xã hội.",
-    state: "Thiết chế tổ chức và bảo đảm thực hiện quyền làm chủ đó.",
+    label: "Nền tảng",
+    democracy: "Bảo đảm quyền lực thuộc về nhân dân và điều kiện để nhân dân làm chủ.",
+    state: "Thể chế hóa ý chí nhân dân thành pháp luật và chính sách.",
   },
   {
-    label: "Bản chất",
-    democracy: "Mang bản chất giai cấp công nhân, hướng tới lợi ích của nhân dân lao động.",
-    state: "Là công cụ quyền lực của nhân dân, đặt dưới sự lãnh đạo của Đảng.",
+    label: "Công cụ",
+    democracy: "Tạo cơ chế để nhân dân tham gia quản lý và giám sát.",
+    state: "Tổ chức bộ máy, nguồn lực để quyền làm chủ thành hiện thực.",
   },
   {
-    label: "Cách biểu hiện",
-    democracy: "Bầu cử, tham gia quản lý, giám sát, phản biện, thụ hưởng quyền con người.",
-    state: "Hiến pháp, pháp luật, bộ máy công quyền, chính sách, quản lý xã hội.",
+    label: "Kiểm soát quyền lực",
+    democracy: "Giám sát xã hội, phản biện, chống tha hóa quyền lực.",
+    state: "Công khai, minh bạch, kỷ luật, pháp luật, xử lý tham nhũng.",
   },
   {
-    label: "Điểm cần nhớ",
-    democracy: "Không tách rời kỷ luật, kỷ cương và trách nhiệm công dân.",
-    state: "Không được quan liêu, xa dân, tham nhũng, lãng phí.",
+    label: "Hệ quả",
+    democracy: "Vi phạm dân chủ làm suy giảm niềm tin và biến quyền lực của nhân dân.",
+    state: "Mất bản chất dẫn đến dân chủ hình thức, chuyên quyền.",
   },
 ];
 
 const vietnamTimeline = [
   {
     year: "1945",
-    title: "Xác lập chế độ dân chủ nhân dân",
-    text: "Sau Cách mạng Tháng Tám, nhân dân trở thành chủ thể của nhà nước mới.",
+    title: "Nhà nước của nhân dân ra đời",
+    text: "Cách mạng Tháng Tám lập nên chính quyền của nhân dân, do nhân dân, vì nhân dân.",
   },
   {
-    year: "1986",
-    title: "Đổi mới và phát huy dân chủ",
-    text: "Đại hội VI nhấn mạnh phát huy dân chủ như động lực phát triển đất nước.",
+    year: "2013",
+    title: "Hiến pháp khẳng định quyền công dân",
+    text: "Quyền con người, quyền và nghĩa vụ công dân được quy định rõ trong Hiến pháp.",
   },
   {
     year: "Hiện nay",
-    title: "Xây dựng Nhà nước pháp quyền XHCN",
-    text: "Hoàn thiện pháp luật, kiểm soát quyền lực, cải cách hành chính và phòng chống tham nhũng.",
-  },
-];
-
-const examBlueprint = [
-  "Mở bài: nêu dân chủ XHCN và nhà nước XHCN là hai nội dung gắn bó trong thời kỳ quá độ.",
-  "Thân bài 1: giải thích dân chủ là quyền lực thuộc về nhân dân và bản chất dân chủ XHCN.",
-  "Thân bài 2: trình bày sự ra đời, bản chất, chức năng của nhà nước XHCN.",
-  "Thân bài 3: liên hệ Việt Nam với Nhà nước pháp quyền XHCN của nhân dân, do nhân dân, vì nhân dân.",
-  "Kết bài: khẳng định trách nhiệm công dân trong xây dựng dân chủ, tôn trọng pháp luật, chống quan liêu, tham nhũng.",
-];
-
-const quizItems: QuizItem[] = [
-  {
-    question: "Dân chủ theo nghĩa khái quát nhất là gì?",
-    answer:
-      "Là quyền lực thuộc về nhân dân; nhân dân là chủ thể của quyền lực xã hội và quyền lực nhà nước.",
-  },
-  {
-    question: "Vì sao dân chủ XHCN phải gắn với pháp luật?",
-    answer:
-      "Vì quyền làm chủ chỉ bền vững khi được thể chế hóa, bảo vệ và thực hiện bằng Hiến pháp, pháp luật, kỷ luật và kỷ cương.",
-  },
-  {
-    question: "Nhà nước XHCN có những chức năng cơ bản nào?",
-    answer:
-      "Có chức năng đối nội như tổ chức xây dựng xã hội mới, quản lý kinh tế - xã hội; và chức năng đối ngoại như bảo vệ Tổ quốc, hợp tác, giữ hòa bình.",
-  },
-  {
-    question: "Một ý liên hệ trách nhiệm cá nhân khi học chương này?",
-    answer:
-      "Tôn trọng pháp luật, tham gia xây dựng cộng đồng, thực hiện quyền và nghĩa vụ công dân, phê phán quan liêu, tham nhũng, lãng phí.",
+    title: "Cải cách, minh bạch, chuyển đổi số",
+    text: "Mở rộng tham gia của người dân, công khai minh bạch, phòng chống tham nhũng.",
   },
 ];
 
 const suggestedQuestions = [
-  "Tóm tắt chương 4 MLN thành 5 ý chính",
-  "Phân tích bản chất của dân chủ xã hội chủ nghĩa",
-  "So sánh dân chủ XHCN và nhà nước XHCN",
-  "Lập dàn ý câu hỏi Nhà nước pháp quyền XHCN ở Việt Nam",
+  "Tóm tắt nhà nước XHCN theo 3 ý chính",
+  "Phân tích bản chất nhà nước XHCN theo 3 phương diện",
+  "Giải thích mối quan hệ dân chủ - nhà nước XHCN",
+  "Lập dàn ý câu hỏi về chức năng nhà nước XHCN",
 ];
 
 const initialMessages: Message[] = [
   {
     role: "model",
-    text: "Chào bạn. Mình đang ở chế độ học Chương 4: Dân chủ xã hội chủ nghĩa và Nhà nước xã hội chủ nghĩa. Bạn có thể hỏi tóm tắt, lập dàn ý, giải thích khái niệm hoặc luyện câu hỏi ôn tập.",
+    text: "Chào bạn. Mình đang ở chế độ học: Nhà nước XHCN và mối quan hệ giữa dân chủ XHCN với nhà nước XHCN. Bạn có thể hỏi tóm tắt, lập dàn ý, giải thích khái niệm hoặc luyện câu hỏi ôn tập.",
   },
 ];
 
@@ -314,82 +325,82 @@ const gatePositions: [number, number, number][] = [
 
 const gameQuestions: GameQuestion[] = [
   {
-    domain: "Khái niệm",
-    prompt: "Dân chủ theo nghĩa khái quát nhất trong Chương 4 là gì?",
+    domain: "Sự ra đời",
+    prompt: "Nhà nước XHCN ra đời từ đâu?",
     choices: [
-      { label: "A", text: "Quyền lực thuộc về nhân dân" },
-      { label: "B", text: "Quyền lực chỉ thuộc bộ máy hành chính" },
-      { label: "C", text: "Một nghi thức bầu chọn hình thức" },
+      { label: "A", text: "Từ cách mạng XHCN do giai cấp công nhân lãnh đạo" },
+      { label: "B", text: "Từ thỏa hiệp giữa các giai cấp bóc lột" },
+      { label: "C", text: "Từ sự tự phát của thị trường" },
     ],
     answer: 0,
     explain:
-      "Dân chủ được hiểu là quyền lực thuộc về nhân dân; nhân dân là chủ thể của quyền lực xã hội và quyền lực nhà nước.",
-    keyword: "Nhân dân làm chủ",
+      "Nhà nước XHCN là kết quả tất yếu của cách mạng XHCN do giai cấp công nhân và nhân dân lao động lãnh đạo.",
+    keyword: "Cách mạng XHCN",
+  },
+  {
+    domain: "Hình thức",
+    prompt: "Nhà nước XHCN có thể ra đời bằng những con đường nào?",
+    choices: [
+      { label: "A", text: "Bạo lực cách mạng hoặc hòa bình" },
+      { label: "B", text: "Chỉ thông qua bạo lực" },
+      { label: "C", text: "Chỉ bằng thương lượng" },
+    ],
+    answer: 0,
+    explain:
+      "Tùy điều kiện lịch sử, nhà nước XHCN có thể ra đời bằng bạo lực hoặc hòa bình.",
+    keyword: "Hình thức ra đời",
   },
   {
     domain: "Bản chất",
-    prompt: "Bản chất chính trị của dân chủ xã hội chủ nghĩa gắn với lực lượng nào?",
+    prompt: "Bản chất nhà nước XHCN thể hiện ở mấy phương diện?",
     choices: [
-      { label: "A", text: "Giai cấp công nhân và nhân dân lao động" },
-      { label: "B", text: "Lợi ích riêng của thiểu số đặc quyền" },
-      { label: "C", text: "Cơ chế thị trường tự phát" },
+      { label: "A", text: "Ba phương diện: chính trị, kinh tế, văn hóa - xã hội" },
+      { label: "B", text: "Chỉ một phương diện chính trị" },
+      { label: "C", text: "Hai phương diện: chính trị và kinh tế" },
     ],
     answer: 0,
     explain:
-      "Dân chủ xã hội chủ nghĩa mang bản chất giai cấp công nhân, đồng thời hướng tới lợi ích của nhân dân lao động.",
-    keyword: "Bản chất giai cấp công nhân",
-  },
-  {
-    domain: "Pháp luật",
-    prompt: "Vì sao dân chủ XHCN phải đi cùng kỷ luật, kỷ cương và pháp luật?",
-    choices: [
-      { label: "A", text: "Để quyền làm chủ được thể chế hóa và bảo đảm" },
-      { label: "B", text: "Để hạn chế mọi quyền của công dân" },
-      { label: "C", text: "Để bỏ qua trách nhiệm của nhà nước" },
-    ],
-    answer: 0,
-    explain:
-      "Dân chủ chỉ bền vững khi được thể chế hóa bằng Hiến pháp, pháp luật, kỷ luật và kỷ cương.",
-    keyword: "Pháp quyền",
-  },
-  {
-    domain: "Nhà nước XHCN",
-    prompt: "Nhà nước xã hội chủ nghĩa có vai trò cốt lõi nào?",
-    choices: [
-      { label: "A", text: "Tổ chức và bảo đảm quyền làm chủ của nhân dân" },
-      { label: "B", text: "Đứng ngoài quá trình quản lý xã hội" },
-      { label: "C", text: "Chỉ đại diện cho lợi ích cá nhân" },
-    ],
-    answer: 0,
-    explain:
-      "Nhà nước XHCN là thiết chế thể hiện, bảo vệ và tổ chức thực hiện quyền làm chủ của nhân dân.",
-    keyword: "Thiết chế thực hiện",
+      "Bản chất nhà nước XHCN thể hiện ở ba phương diện: chính trị, kinh tế, văn hóa - xã hội.",
+    keyword: "Ba phương diện",
   },
   {
     domain: "Chức năng",
-    prompt: "Đâu là chức năng đối nội quan trọng của nhà nước XHCN?",
+    prompt: "Chức năng đối nội của nhà nước XHCN là gì?",
     choices: [
-      { label: "A", text: "Tổ chức xây dựng xã hội mới và quản lý đời sống xã hội" },
-      { label: "B", text: "Từ bỏ quản lý kinh tế, văn hóa, xã hội" },
-      { label: "C", text: "Chỉ thực hiện hoạt động đối ngoại" },
+      { label: "A", text: "Quản lý các lĩnh vực trong nước" },
+      { label: "B", text: "Chỉ bảo vệ chủ quyền đối ngoại" },
+      { label: "C", text: "Không can thiệp kinh tế - xã hội" },
     ],
     answer: 0,
     explain:
-      "Chức năng đối nội gồm tổ chức xây dựng xã hội mới, quản lý kinh tế, văn hóa, xã hội và bảo đảm quyền nhân dân.",
+      "Đối nội là quản lý kinh tế, chính trị, văn hóa, giáo dục, y tế, an ninh trong nước.",
     keyword: "Đối nội",
   },
   {
-    domain: "Việt Nam",
-    prompt: "Nhà nước pháp quyền XHCN ở Việt Nam được diễn đạt đúng nhất là gì?",
+    domain: "Quan hệ",
+    prompt: "Trong mối quan hệ, dân chủ XHCN giữ vai trò nào?",
     choices: [
-      { label: "A", text: "Của nhân dân, do nhân dân, vì nhân dân" },
-      { label: "B", text: "Tách khỏi nhân dân và không chịu giám sát" },
-      { label: "C", text: "Không cần Hiến pháp và pháp luật" },
+      { label: "A", text: "Nền tảng để xây dựng nhà nước" },
+      { label: "B", text: "Chỉ là khẩu hiệu hình thức" },
+      { label: "C", text: "Phụ thuộc hoàn toàn vào thị trường" },
     ],
     answer: 0,
     explain:
-      "Ở Việt Nam, Nhà nước pháp quyền XHCN là của nhân dân, do nhân dân, vì nhân dân, quản lý xã hội bằng pháp luật.",
-    keyword: "Của dân, do dân, vì dân",
+      "Dân chủ XHCN là nền tảng cho việc xây dựng và hoạt động của nhà nước XHCN.",
+    keyword: "Dân chủ là nền tảng",
+  },
+  {
+    domain: "Kiểm soát",
+    prompt: "Dân chủ XHCN giúp kiểm soát quyền lực nhà nước bằng cách nào?",
+    choices: [
+      { label: "A", text: "Giám sát và phản biện xã hội" },
+      { label: "B", text: "Bỏ qua trách nhiệm giải trình" },
+      { label: "C", text: "Hạn chế tham gia của người dân" },
+    ],
+    answer: 0,
+    explain:
+      "Giám sát và phản biện xã hội giúp ngăn tham nhũng, lạm quyền và quan liêu.",
+    keyword: "Giám sát quyền lực",
   },
 ];
 
@@ -1171,16 +1182,248 @@ function SectionHeading({
   );
 }
 
+function LessonOverview() {
+  return (
+    <section className="min-h-screen bg-[#F8F7F5] pb-14 pt-20 md:py-18">
+      <div className="mx-auto max-w-7xl px-4 md:px-8">
+        <div className="mb-8 grid gap-5 md:mb-10 lg:grid-cols-[1fr_360px] lg:items-end">
+          <SectionHeading
+            eyebrow="Bài học"
+            title="Chọn phần để xem nội dung chi tiết"
+            subtitle="Trang Bài học chia thành 2 phần lớn. Bấm vào từng phần để xem nội dung."
+          />
+          <div className="rounded-[8px] border border-[#17211D]/10 bg-white p-5 shadow-sm">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#B83A2A]">Lộ trình học</p>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="rounded-[8px] bg-[#F8F7F5] p-4">
+                <p className="text-3xl font-black text-[#17211D]">2</p>
+                <p className="mt-1 text-xs font-bold text-[#617269]">Phần nội dung</p>
+              </div>
+              <div className="rounded-[8px] bg-[#F8F7F5] p-4">
+                <p className="text-3xl font-black text-[#17211D]">5</p>
+                <p className="mt-1 text-xs font-bold text-[#617269]">Mục trọng tâm</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          {lessonSections.map((section) => {
+            const Icon = section.icon;
+            return (
+              <NavLink
+                key={section.id}
+                to={`/bai-hoc/${section.id}`}
+                className="group relative overflow-hidden rounded-[28px] border border-[#17211D]/10 bg-white shadow-sm transition hover:-translate-y-1 hover:border-[#B83A2A]/40 hover:shadow-xl"
+              >
+                <div className="relative min-h-[360px] md:min-h-[430px]">
+                  <img
+                    src={section.image}
+                    alt={section.imageAlt}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,24,39,0.36),rgba(17,24,39,0.92))]" />
+                  <div className="absolute inset-0 flex flex-col justify-between p-6 text-white md:p-8">
+                    <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/12 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/80">
+                      <Icon className="h-4 w-4" />
+                      {section.eyebrow}
+                    </span>
+                    <div>
+                      <h3 className="max-w-2xl text-3xl font-black leading-tight md:text-4xl">{section.title}</h3>
+                      <p className="mt-3 max-w-xl text-sm font-medium leading-6 text-white/82 md:text-base">
+                        {section.description}
+                      </p>
+                      <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/18 pt-5">
+                        <span className="text-xs font-black uppercase tracking-[0.16em] text-white/72">
+                          {section.subSections.length} mục chi tiết
+                        </span>
+                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#17211D] transition group-hover:bg-[#F1C75B]">
+                          <ChevronRight className="h-5 w-5" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </NavLink>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CompareTable() {
+  return (
+    <div className="overflow-hidden rounded-[8px] border border-[#17211D]/10 bg-white shadow-sm">
+      <div className="grid bg-[#17211D] text-white md:grid-cols-[180px_1fr_1fr]">
+        <div className="p-4 text-sm font-black uppercase tracking-[0.14em] text-[#F1C75B]">Tiêu chí</div>
+        <div className="border-t border-white/10 p-4 font-black md:border-l md:border-t-0">Dân chủ XHCN</div>
+        <div className="border-t border-white/10 p-4 font-black md:border-l md:border-t-0">Nhà nước XHCN</div>
+      </div>
+      {compareRows.map((row) => (
+        <div key={row.label} className="grid border-t border-[#17211D]/10 md:grid-cols-[180px_1fr_1fr]">
+          <div className="bg-[#F6F1E8] p-4 text-sm font-black text-[#B83A2A]">{row.label}</div>
+          <div className="border-t border-[#17211D]/8 p-4 text-sm leading-6 text-[#44564E] md:border-l md:border-t-0">
+            {row.democracy}
+          </div>
+          <div className="border-t border-[#17211D]/8 p-4 text-sm leading-6 text-[#44564E] md:border-l md:border-t-0">
+            {row.state}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function LessonDetailPage() {
+  const navigate = useNavigate();
+  const { sectionId } = useParams();
+  const selectedLesson = lessonSections.find((lesson) => lesson.id === sectionId) ?? lessonSections[0];
+  const [activeSubSectionId, setActiveSubSectionId] = useState(
+    selectedLesson.subSections[0]?.id ?? "",
+  );
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const selectedSubSection = selectedLesson.subSections.find((section) => section.id === activeSubSectionId)
+    ?? selectedLesson.subSections[0];
+
+  useEffect(() => {
+    setActiveSubSectionId(selectedLesson.subSections[0]?.id ?? "");
+    setIsCompareOpen(false);
+  }, [selectedLesson.id]);
+
+  return (
+    <section className="bg-white py-18 md:py-24">
+      <div className="mx-auto max-w-7xl px-4 md:px-8">
+        <div className="mb-6">
+          <button
+            type="button"
+            onClick={() => navigate("/bai-hoc")}
+            className="inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#4B5563] transition hover:border-[#B83A2A]/40"
+          >
+            <ChevronRight className="h-4 w-4 rotate-180" />
+            Quay lại Bài học
+          </button>
+        </div>
+
+        <motion.article
+          key={selectedLesson.id}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+          className="overflow-hidden rounded-[28px] border border-[#E5E7EB] bg-white shadow-sm"
+        >
+          <div className="relative h-[280px] md:h-[380px]">
+            <img
+              src={selectedLesson.image}
+              alt={selectedLesson.imageAlt}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(17,24,39,0.92),rgba(17,24,39,0.28))]" />
+            <div className="absolute inset-0 flex flex-col justify-between p-6 text-white md:p-8">
+              <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/12 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/80">
+                <selectedLesson.icon className="h-4 w-4" />
+                {selectedLesson.eyebrow}
+              </span>
+              <div>
+                <h3 className="text-2xl font-black md:text-4xl">{selectedLesson.title}</h3>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-white/80 md:text-base">
+                  {selectedLesson.description}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-4 p-6 md:p-8">
+            {selectedLesson.subSections.map((subSection) => {
+              const isActiveSub = subSection.id === selectedSubSection?.id;
+              return (
+                <button
+                  key={subSection.id}
+                  type="button"
+                  onClick={() => setActiveSubSectionId(subSection.id)}
+                  className={`rounded-2xl border p-5 text-left transition ${
+                    isActiveSub
+                      ? "border-[#B83A2A] bg-white"
+                      : "border-[#E5E7EB] bg-[#F9FAFB] hover:border-[#B83A2A]/40"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <h4 className="text-lg font-black text-[#111827]">{subSection.title}</h4>
+                    <ChevronRight className={`mt-1 h-5 w-5 shrink-0 transition ${isActiveSub ? "rotate-90 text-[#B83A2A]" : "text-[#9CA3AF]"}`} />
+                  </div>
+                  {isActiveSub && (
+                    <div className="mt-3">
+                      <p className="text-sm leading-6 text-[#4B5563]">{subSection.detail}</p>
+                      <ul className="mt-3 grid gap-2 text-sm text-[#4B5563]">
+                        {subSection.points.map((point) => (
+                          <li key={point} className="flex gap-3">
+                            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#1F6F5B]" />
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+
+            {selectedLesson.id === "phan-2" && (
+              <div className={`mt-2 rounded-[20px] border p-5 transition ${
+                isCompareOpen
+                  ? "border-[#B83A2A] bg-[#F8F7F5]"
+                  : "border-[#E5E7EB] bg-[#F9FAFB] hover:border-[#B83A2A]/40"
+              }`}>
+                <button
+                  type="button"
+                  onClick={() => setIsCompareOpen((current) => !current)}
+                  className="flex w-full items-start justify-between gap-3 text-left"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] bg-[#17211D] text-[#F1C75B]">
+                      <Scale className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-[0.18em] text-[#B83A2A]">
+                        Bảng hệ thống hóa
+                      </p>
+                      <h4 className="mt-1 text-xl font-black text-[#111827]">
+                        So sánh dân chủ XHCN và nhà nước XHCN
+                      </h4>
+                    </div>
+                  </div>
+                  <ChevronRight className={`mt-2 h-5 w-5 shrink-0 transition ${isCompareOpen ? "rotate-90 text-[#B83A2A]" : "text-[#9CA3AF]"}`} />
+                </button>
+
+                <AnimatePresence>
+                  {isCompareOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="mt-4 overflow-hidden"
+                    >
+                      <CompareTable />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+          </div>
+        </motion.article>
+      </div>
+    </section>
+  );
+}
+
 function App() {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [activeLesson, setActiveLesson] = useState(lessonBlocks[0].id);
-  const [openQuiz, setOpenQuiz] = useState<number | null>(0);
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const selectedLesson = lessonBlocks.find((lesson) => lesson.id === activeLesson) ?? lessonBlocks[0];
 
   const chatHistory = useMemo(
     () =>
@@ -1194,6 +1437,14 @@ function App() {
   const openChat = () => {
     setIsMenuOpen(false);
     setIsChatOpen(true);
+  };
+
+  const changePage = (path: string) => {
+    setIsMenuOpen(false);
+    navigate(path);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const handleSend = async (text = inputValue) => {
@@ -1218,7 +1469,7 @@ function App() {
         ...nextMessages,
         {
           role: "model",
-          text: "Mình chưa kết nối được hệ thống hỏi đáp. Bạn vẫn có thể học theo các mục Tổng quan, Bài học, So sánh, Việt Nam và Luyện tập trên trang.",
+          text: "Mình chưa kết nối được hệ thống hỏi đáp. Bạn vẫn có thể học theo các mục Tổng quan, Bài học, Việt Nam và Game trên trang.",
         },
       ]);
     } finally {
@@ -1232,39 +1483,50 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F1E8] text-[#17211D] selection:bg-[#B83A2A] selection:text-white">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-[#17211D]/10 bg-[#F6F1E8]/92 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8">
-          <a href="#" className="flex items-center gap-3 font-semibold" aria-label="Về đầu trang">
-            <span className="grid h-10 w-10 place-items-center rounded-[8px] bg-[#17211D] text-[#F6F1E8]">
+    <div className="min-h-screen bg-[#F8F7F5] text-[#111827] selection:bg-[#B83A2A] selection:text-white">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-[#E5E7EB] bg-white/92 shadow-[0_8px_30px_rgba(23,33,29,0.06)] backdrop-blur-xl">
+        <div className="mx-auto grid h-16 max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-4 md:px-8">
+          <button
+            type="button"
+            onClick={() => changePage("/tong-quan")}
+            className="flex min-w-0 items-center gap-3 font-semibold"
+            aria-label="Về đầu trang"
+          >
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] bg-[#17211D] text-[#F6F1E8]">
               <Scale className="h-5 w-5" />
             </span>
-            <span className="leading-tight">
+            <span className="hidden leading-tight sm:block">
               Chương 4 MLN
               <span className="block text-xs font-medium text-[#63756B]">
                 Dân chủ và Nhà nước
               </span>
             </span>
-          </a>
+          </button>
 
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="hidden justify-self-center rounded-[8px] border border-[#17211D]/8 bg-[#F3F1ED] p-1 shadow-inner md:flex">
             {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="rounded-[8px] px-3 py-2 text-sm font-semibold text-[#44564E] transition hover:bg-[#17211D]/6"
+              <NavLink
+                key={item.id}
+                to={item.path}
+                className={({ isActive }) =>
+                  `inline-flex h-10 min-w-[92px] items-center justify-center rounded-[8px] px-4 text-sm font-bold transition ${
+                    isActive
+                      ? "bg-white text-[#17211D] shadow-sm ring-1 ring-[#17211D]/8"
+                      : "text-[#44564E] hover:bg-white/65 hover:text-[#17211D]"
+                  }`
+                }
               >
                 {item.label}
-              </a>
+              </NavLink>
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={openChat}
               aria-label="Mở trợ lý AI"
-              className="inline-flex h-10 items-center gap-2 rounded-[8px] bg-[#B83A2A] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#972D22]"
+              className="inline-flex h-10 items-center gap-2 rounded-[8px] bg-[#B83A2A] px-4 text-sm font-bold text-white shadow-sm transition hover:bg-[#972D22]"
             >
               <Bot className="h-4 w-4" />
               <span className="hidden sm:inline">Hỏi AI</span>
@@ -1286,18 +1548,25 @@ function App() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden border-t border-[#17211D]/10 bg-[#F6F1E8] md:hidden"
+              className="overflow-hidden border-t border-[#17211D]/10 bg-white shadow-lg md:hidden"
             >
-              <div className="grid gap-1 px-4 py-3">
+              <div className="grid gap-2 px-4 py-3">
                 {navItems.map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
+                  <NavLink
+                    key={item.id}
+                    to={item.path}
                     onClick={() => setIsMenuOpen(false)}
-                    className="rounded-[8px] px-3 py-3 text-sm font-semibold text-[#44564E] hover:bg-[#17211D]/6"
+                    className={({ isActive }) =>
+                      `flex min-h-12 items-center justify-between rounded-[8px] border px-3 py-3 text-left text-sm font-bold transition ${
+                        isActive
+                          ? "border-[#17211D]/10 bg-[#F8F7F5] text-[#17211D]"
+                          : "border-[#17211D]/8 bg-white text-[#44564E] hover:border-[#B83A2A]/40"
+                      }`
+                    }
                   >
-                    {item.label}
-                  </a>
+                    <span>{item.label}</span>
+                    <ChevronRight className="h-4 w-4 text-[#B83A2A]" />
+                  </NavLink>
                 ))}
               </div>
             </motion.div>
@@ -1306,438 +1575,221 @@ function App() {
       </header>
 
       <main>
-        <section className="relative min-h-[92vh] overflow-hidden pt-16">
-          <img
-            src={images.hero}
-            alt="Tòa nhà Quốc hội Việt Nam"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(23,33,29,0.96),rgba(23,33,29,0.78),rgba(23,33,29,0.18))]" />
-          <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#F6F1E8] to-transparent" />
+        <Routes>
+          <Route path="/" element={<Navigate to="/tong-quan" replace />} />
+          <Route
+            path="/tong-quan"
+            element={(
+              <>
+                <section className="relative min-h-[92vh] overflow-hidden pt-16">
+              <img
+                src={images.hero}
+                alt="Tòa nhà Quốc hội Việt Nam"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(23,33,29,0.96),rgba(23,33,29,0.78),rgba(23,33,29,0.18))]" />
+              <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#F8F7F5] to-transparent" />
 
-          <div className="relative mx-auto flex min-h-[calc(92vh-4rem)] max-w-7xl items-center px-4 py-16 md:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              className="max-w-4xl text-white"
-            >
-              <div className="mb-6 inline-flex items-center gap-2 rounded-[8px] border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#F1C75B] backdrop-blur">
-                <Sparkles className="h-4 w-4" />
-                Chủ nghĩa xã hội khoa học
-              </div>
-              <h1 className="max-w-5xl text-5xl font-black leading-[0.96] tracking-tight md:text-7xl lg:text-8xl">
-                Dân chủ XHCN
-                <span className="block text-[#F1C75B]">và Nhà nước XHCN</span>
-              </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-white/88 md:text-xl">
-                Một trang học trực quan cho Chương 4: hiểu khái niệm, nắm bản chất,
-                phân biệt dân chủ với nhà nước, và biết cách liên hệ Việt Nam khi làm bài.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href="#bai-hoc"
-                  className="inline-flex items-center gap-2 rounded-[8px] bg-[#F1C75B] px-5 py-3 text-sm font-bold text-[#17211D] transition hover:bg-[#FFDA72]"
+              <div className="relative mx-auto flex min-h-[calc(92vh-4rem)] max-w-7xl items-center px-4 py-16 md:px-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7 }}
+                  className="max-w-4xl text-white"
                 >
-                  Học theo 3 phần
-                  <ArrowUpRight className="h-4 w-4" />
-                </a>
-                <a
-                  href="#luyen-tap"
-                  className="inline-flex items-center gap-2 rounded-[8px] border border-white/20 bg-white/10 px-5 py-3 text-sm font-bold text-white backdrop-blur transition hover:bg-white/18"
-                >
-                  Luyện trả lời
-                  <CircleHelp className="h-4 w-4" />
-                </a>
+                  <div className="mb-6 inline-flex items-center gap-2 rounded-[8px] border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#F1C75B] backdrop-blur">
+                    <Sparkles className="h-4 w-4" />
+                    Chủ nghĩa xã hội khoa học
+                  </div>
+                  <h1 className="max-w-5xl text-5xl font-black leading-[0.96] tracking-tight md:text-7xl lg:text-8xl">
+                    Dân chủ XHCN
+                    <span className="block text-[#F1C75B]">và Nhà nước XHCN</span>
+                  </h1>
+                  <p className="mt-6 max-w-2xl text-lg leading-8 text-white/88 md:text-xl">
+                    Tập trung vào: sự ra đời, bản chất, chức năng của nhà nước XHCN và mối quan hệ
+                    giữa dân chủ XHCN với nhà nước XHCN, kèm ví dụ vận dụng tại Việt Nam.
+                  </p>
+                  <div className="mt-8 flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={() => changePage("/bai-hoc")}
+                      className="inline-flex items-center gap-2 rounded-[8px] bg-[#F1C75B] px-5 py-3 text-sm font-bold text-[#17211D] transition hover:bg-[#FFDA72]"
+                    >
+                      Học theo 3 phần
+                      <ArrowUpRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </motion.div>
               </div>
-            </motion.div>
-          </div>
-        </section>
+            </section>
 
-        <section id="tong-quan" className="py-18 md:py-24">
-          <div className="mx-auto max-w-7xl px-4 md:px-8">
-            <SectionHeading
-              eyebrow="Tổng quan"
-              title="Nhìn một lần là thấy mạch chương"
-              subtitle="Chương 4 xoay quanh một câu hỏi lớn: nhân dân làm chủ bằng cách nào, và nhà nước tổ chức quyền làm chủ đó ra sao?"
-            />
+            <section className="py-18 md:py-24">
+              <div className="mx-auto max-w-7xl px-4 md:px-8">
+                <SectionHeading
+                  eyebrow="Tổng quan"
+                  title="Nhìn một lần là thấy mạch chương"
+                  subtitle="Trọng tâm là nhà nước XHCN và mối quan hệ với dân chủ XHCN: nền tảng, công cụ, chức năng và ý nghĩa." 
+                />
 
-            <div className="grid gap-4 md:grid-cols-4">
-              {overview.map((card, index) => {
-                const Icon = card.icon;
-                return (
-                  <motion.article
-                    key={card.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-80px" }}
-                    transition={{ delay: index * 0.05 }}
-                    className="rounded-[8px] border border-[#17211D]/10 bg-white p-5 shadow-sm"
-                  >
-                    <span className="grid h-11 w-11 place-items-center rounded-[8px] bg-[#1F6F5B] text-white">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#B83A2A]">
-                      {card.label}
-                    </p>
-                    <h3 className="mt-2 text-2xl font-black leading-tight">{card.value}</h3>
-                    <p className="mt-3 text-sm leading-6 text-[#617269]">{card.text}</p>
-                  </motion.article>
-                );
-              })}
-            </div>
+                <div className="grid gap-4 md:grid-cols-4">
+                  {overview.map((card, index) => {
+                    const Icon = card.icon;
+                    return (
+                      <motion.article
+                        key={card.label}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-80px" }}
+                        transition={{ delay: index * 0.05 }}
+                        className="rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-sm"
+                      >
+                        <span className="grid h-11 w-11 place-items-center rounded-[8px] bg-[#1F6F5B] text-white">
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#B83A2A]">
+                          {card.label}
+                        </p>
+                        <h3 className="mt-2 text-2xl font-black leading-tight">{card.value}</h3>
+                        <p className="mt-3 text-sm leading-6 text-[#617269]">{card.text}</p>
+                      </motion.article>
+                    );
+                  })}
+                </div>
 
-            <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-              <div className="rounded-[8px] bg-[#17211D] p-6 text-white md:p-8">
-                <div className="flex items-start gap-4">
-                  <span className="grid h-14 w-14 shrink-0 place-items-center rounded-[8px] bg-[#F1C75B] text-[#17211D]">
-                    <Network className="h-7 w-7" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-black uppercase tracking-[0.18em] text-[#F1C75B]">
-                      Công thức nhớ
-                    </p>
-                    <h3 className="mt-2 text-2xl font-black md:text-3xl">
-                      Dân chủ là mục tiêu, nhà nước là công cụ tổ chức thực hiện
-                    </h3>
-                    <p className="mt-4 text-base leading-8 text-white/72">
-                      Nếu nhớ được câu này, bạn sẽ dễ xử lý hầu hết câu hỏi của chương:
-                      dân chủ nói về quyền làm chủ; nhà nước nói về thiết chế bảo đảm quyền làm chủ.
-                    </p>
+                <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+                  <div className="rounded-2xl bg-[#17211D] p-6 text-white md:p-8">
+                    <div className="flex items-start gap-4">
+                      <span className="grid h-14 w-14 shrink-0 place-items-center rounded-[8px] bg-[#F1C75B] text-[#17211D]">
+                        <Network className="h-7 w-7" />
+                      </span>
+                      <div>
+                        <p className="text-sm font-black uppercase tracking-[0.18em] text-[#F1C75B]">
+                          Công thức nhớ
+                        </p>
+                        <h3 className="mt-2 text-2xl font-black md:text-3xl">
+                          Dân chủ là nền tảng, nhà nước là công cụ thực thi
+                        </h3>
+                        <p className="mt-4 text-base leading-8 text-white/72">
+                          Nắm vững mối quan hệ này sẽ giúp triển khai các câu hỏi về bản chất,
+                          chức năng và ý nghĩa của nhà nước XHCN.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3 rounded-2xl border border-[#E5E7EB] bg-white p-6">
+                    {principles.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <div key={item.title} className="flex gap-3 border-b border-[#E5E7EB] pb-3 last:border-b-0 last:pb-0">
+                          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#F8F7F5] text-[#B83A2A]">
+                            <Icon className="h-4 w-4" />
+                          </span>
+                          <div>
+                            <h3 className="font-black">{item.title}</h3>
+                            <p className="mt-1 text-sm leading-6 text-[#617269]">{item.text}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
-
-              <div className="grid gap-3 rounded-[8px] border border-[#17211D]/10 bg-white p-5">
-                {principles.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={item.title} className="flex gap-3 border-b border-[#17211D]/8 pb-3 last:border-b-0 last:pb-0">
-                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] bg-[#F6F1E8] text-[#B83A2A]">
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <div>
-                        <h3 className="font-black">{item.title}</h3>
-                        <p className="mt-1 text-sm leading-6 text-[#617269]">{item.text}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="bai-hoc" className="bg-white py-18 md:py-24">
-          <div className="mx-auto max-w-7xl px-4 md:px-8">
-            <SectionHeading
-              eyebrow="Bài học"
-              title="Ba phần trọng tâm của Chương 4"
-              subtitle="Chọn từng phần để học theo kiểu: luận điểm chính, ý cần ghi nhớ, mẹo triển khai khi đi thi."
-            />
-
-            <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-              <div className="grid content-start gap-3">
-                {lessonBlocks.map((lesson) => {
-                  const Icon = lesson.icon;
-                  const isActive = lesson.id === activeLesson;
-                  return (
-                    <button
-                      key={lesson.id}
-                      type="button"
-                      onClick={() => setActiveLesson(lesson.id)}
-                      className={`flex items-center justify-between rounded-[8px] border p-4 text-left transition ${
-                        isActive
-                          ? "border-[#B83A2A] bg-[#B83A2A] text-white shadow-md"
-                          : "border-[#17211D]/10 bg-[#F6F1E8] text-[#17211D] hover:border-[#B83A2A]/40"
-                      }`}
-                    >
-                      <span className="flex items-center gap-3">
-                        <span className={`grid h-10 w-10 place-items-center rounded-[8px] ${isActive ? "bg-white/15" : "bg-white"}`}>
-                          <Icon className="h-5 w-5" />
-                        </span>
-                        <span>
-                          <span className="block text-xs font-black uppercase tracking-[0.14em] opacity-70">
-                            {lesson.eyebrow}
-                          </span>
-                          <span className="mt-1 block text-sm font-black leading-5">{lesson.title}</span>
-                        </span>
-                      </span>
-                      <ChevronRight className="h-5 w-5 shrink-0" />
-                    </button>
-                  );
-                })}
-              </div>
-
-              <motion.article
-                key={selectedLesson.id}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25 }}
-                className="overflow-hidden rounded-[8px] border border-[#17211D]/10 bg-[#F6F1E8]"
-              >
-                <div className="grid lg:grid-cols-[0.95fr_1.05fr]">
-                  <div className="relative min-h-[320px]">
-                    <img
-                      src={selectedLesson.image}
-                      alt={selectedLesson.imageAlt}
-                      className="absolute inset-0 h-full w-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#17211D]/80 via-[#17211D]/20 to-transparent" />
-                    <div className="absolute bottom-5 left-5 right-5">
-                      <p className="text-sm font-black uppercase tracking-[0.18em] text-[#F1C75B]">
-                        {selectedLesson.eyebrow}
-                      </p>
-                      <h3 className="mt-2 text-3xl font-black leading-tight text-white md:text-4xl">
-                        {selectedLesson.title}
-                      </h3>
-                    </div>
-                  </div>
-
-                  <div className="p-6 md:p-8">
-                    <p className="rounded-[8px] bg-white p-5 text-base font-semibold leading-8 text-[#24352E]">
-                      {selectedLesson.thesis}
+            </section>
+              </>
+            )}
+          />
+          <Route path="/bai-hoc" element={<LessonOverview />} />
+          <Route path="/bai-hoc/:sectionId" element={<LessonDetailPage />} />
+          <Route
+            path="/viet-nam"
+            element={(
+              <section className="min-h-screen bg-[#121C18] pb-16 pt-24 text-white md:pb-20 md:pt-28">
+            <div className="mx-auto max-w-7xl px-4 md:px-8">
+              <div className="grid gap-8 lg:min-h-[calc(100vh-12rem)] lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
+                <div>
+                  <p className="mb-3 text-sm font-black uppercase tracking-[0.18em] text-[#F1C75B]">
+                    Liên hệ Việt Nam
+                  </p>
+                  <h2 className="max-w-[620px] text-4xl font-black leading-[1.05] md:text-6xl">
+                    Dân chủ và nhà nước XHCN trong thực tiễn
+                  </h2>
+                  <p className="mt-5 max-w-xl text-base font-medium leading-8 text-white/72">
+                    Liên hệ Việt Nam có thể đi từ quyền làm chủ của nhân dân,
+                    đến thể chế hóa bằng pháp luật và vai trò quản lý xã hội của nhà nước.
+                  </p>
+                  <div className="mt-7 flex gap-3 rounded-[8px] border border-white/12 bg-white/[0.07] p-4 shadow-sm">
+                    <BadgeCheck className="mt-1 h-5 w-5 shrink-0 text-[#F1C75B]" />
+                    <p className="text-sm font-semibold leading-7 text-white/78">
+                      Câu chốt: Dân chủ là nền tảng, nhà nước là công cụ để quyền làm chủ của
+                      nhân dân được thực hiện và được bảo vệ.
                     </p>
-                    <div className="mt-5 grid gap-3">
-                      {selectedLesson.core.map((item) => (
-                        <div key={item} className="flex gap-3 text-sm leading-6 text-[#44564E]">
+                  </div>
+                  <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                    {["Nhân dân", "Pháp luật", "Minh bạch"].map((item) => (
+                      <div key={item} className="rounded-[8px] border border-white/10 bg-white/[0.05] px-4 py-3">
+                        <p className="text-sm font-black text-[#F1C75B]">{item}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid gap-3">
+                  {vietnamTimeline.map((item, index) => (
+                    <motion.article
+                      key={item.year}
+                      initial={{ opacity: 0, x: 24 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, margin: "-80px" }}
+                      transition={{ delay: index * 0.06 }}
+                      className="grid gap-4 rounded-[8px] border border-white/10 bg-white/[0.07] p-5 shadow-sm backdrop-blur md:grid-cols-[132px_1fr] md:items-center"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="grid h-11 w-11 place-items-center rounded-[8px] bg-[#F1C75B] text-[#17211D]">
+                          <BookOpen className="h-5 w-5" />
+                        </span>
+                        <p className="text-xl font-black text-[#F1C75B]">{item.year}</p>
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-black">{item.title}</h3>
+                        <p className="mt-2 text-sm leading-6 text-white/72">{item.text}</p>
+                      </div>
+                    </motion.article>
+                  ))}
+
+                  <div className="rounded-[8px] bg-[#F6F1E8] p-6 text-[#17211D] shadow-sm md:p-7">
+                    <div className="mb-5 flex items-center gap-3">
+                      <span className="grid h-11 w-11 place-items-center rounded-[8px] bg-[#1F6F5B] text-white">
+                        <Scale className="h-5 w-5" />
+                      </span>
+                      <h3 className="text-2xl font-black">4 điểm liên hệ nhanh</h3>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {[
+                        "Bầu cử, góp ý luật pháp và tham gia giám sát xã hội.",
+                        "Cải cách hành chính, dịch vụ công số, minh bạch hóa.",
+                        "Phòng chống tham nhũng, lạm quyền và quan liêu.",
+                        "An sinh xã hội, hỗ trợ vùng khó khăn, thu hẹp bất bình đẳng.",
+                      ].map((item) => (
+                        <div key={item} className="flex gap-3 text-sm font-semibold leading-6 text-[#44564E]">
                           <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[#1F6F5B]" />
                           <span>{item}</span>
                         </div>
                       ))}
                     </div>
-                    <div className="mt-6 flex gap-3 rounded-[8px] border border-[#B83A2A]/20 bg-[#B83A2A]/8 p-4 text-sm font-bold leading-6 text-[#7E281F]">
-                      <SearchCheck className="mt-0.5 h-5 w-5 shrink-0" />
-                      <span>{selectedLesson.examHint}</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.article>
-            </div>
-          </div>
-        </section>
-
-        <section id="so-sanh" className="py-18 md:py-24">
-          <div className="mx-auto max-w-7xl px-4 md:px-8">
-            <SectionHeading
-              eyebrow="So sánh"
-              title="Đừng học lẫn: dân chủ và nhà nước khác nhau ở đâu?"
-              align="center"
-            />
-
-            <div className="overflow-hidden rounded-[8px] border border-[#17211D]/10 bg-white shadow-sm">
-              <div className="grid bg-[#17211D] text-white md:grid-cols-[180px_1fr_1fr]">
-                <div className="p-4 text-sm font-black uppercase tracking-[0.14em] text-[#F1C75B]">Tiêu chí</div>
-                <div className="border-t border-white/10 p-4 font-black md:border-l md:border-t-0">Dân chủ XHCN</div>
-                <div className="border-t border-white/10 p-4 font-black md:border-l md:border-t-0">Nhà nước XHCN</div>
-              </div>
-              {compareRows.map((row) => (
-                <div key={row.label} className="grid border-t border-[#17211D]/10 md:grid-cols-[180px_1fr_1fr]">
-                  <div className="bg-[#F6F1E8] p-4 text-sm font-black text-[#B83A2A]">{row.label}</div>
-                  <div className="border-t border-[#17211D]/8 p-4 text-sm leading-6 text-[#44564E] md:border-l md:border-t-0">
-                    {row.democracy}
-                  </div>
-                  <div className="border-t border-[#17211D]/8 p-4 text-sm leading-6 text-[#44564E] md:border-l md:border-t-0">
-                    {row.state}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="viet-nam" className="bg-[#17211D] py-18 text-white md:py-24">
-          <div className="mx-auto max-w-7xl px-4 md:px-8">
-            <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
-              <div className="lg:sticky lg:top-24">
-                <p className="mb-3 text-sm font-black uppercase tracking-[0.18em] text-[#F1C75B]">
-                  Liên hệ Việt Nam
-                </p>
-                <h2 className="text-3xl font-black leading-tight tracking-tight md:text-5xl">
-                  Nhà nước pháp quyền XHCN: học để biết cách liên hệ
-                </h2>
-                <p className="mt-5 text-base leading-8 text-white/70">
-                  Khi làm bài, phần liên hệ Việt Nam nên đi từ lịch sử hình thành dân chủ,
-                  đến yêu cầu xây dựng nhà nước pháp quyền, rồi kết bằng trách nhiệm công dân.
-                </p>
-                <div className="mt-7 flex gap-3 rounded-[8px] border border-white/12 bg-white/[0.06] p-4">
-                  <BadgeCheck className="mt-1 h-5 w-5 shrink-0 text-[#F1C75B]" />
-                  <p className="text-sm font-semibold leading-7 text-white/78">
-                    Câu chốt: Quyền lực nhà nước thuộc về nhân dân, được tổ chức bằng pháp luật,
-                    dưới sự lãnh đạo của Đảng, nhằm phục vụ nhân dân.
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid gap-4">
-                {vietnamTimeline.map((item, index) => (
-                  <motion.article
-                    key={item.year}
-                    initial={{ opacity: 0, x: 24 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-80px" }}
-                    transition={{ delay: index * 0.06 }}
-                    className="grid gap-4 rounded-[8px] border border-white/10 bg-white/[0.06] p-5 backdrop-blur md:grid-cols-[140px_1fr]"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="grid h-11 w-11 place-items-center rounded-[8px] bg-[#F1C75B] text-[#17211D]">
-                        <BookOpen className="h-5 w-5" />
-                      </span>
-                      <p className="text-xl font-black text-[#F1C75B]">{item.year}</p>
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-black">{item.title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-white/72">{item.text}</p>
-                    </div>
-                  </motion.article>
-                ))}
-
-                <div className="rounded-[8px] bg-[#F6F1E8] p-6 text-[#17211D] md:p-8">
-                  <div className="mb-5 flex items-center gap-3">
-                    <span className="grid h-11 w-11 place-items-center rounded-[8px] bg-[#1F6F5B] text-white">
-                      <Scale className="h-5 w-5" />
-                    </span>
-                    <h3 className="text-2xl font-black">4 hướng xây dựng cần nhớ</h3>
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {[
-                      "Hoàn thiện pháp luật và cơ chế kiểm soát quyền lực.",
-                      "Cải cách hành chính, xây dựng bộ máy tinh gọn, hiệu quả.",
-                      "Nâng cao chất lượng cán bộ, công chức.",
-                      "Phòng, chống tham nhũng, lãng phí, thực hành tiết kiệm.",
-                    ].map((item) => (
-                      <div key={item} className="flex gap-3 text-sm font-semibold leading-6 text-[#44564E]">
-                        <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[#1F6F5B]" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        <section id="luyen-tap" className="py-18 md:py-24">
-          <div className="mx-auto max-w-7xl px-4 md:px-8">
-            <SectionHeading
-              eyebrow="Luyện tập"
-              title="Từ ghi nhớ đến trả lời được câu hỏi"
-              subtitle="Phần này gom dàn ý và câu hỏi tự kiểm tra để người học chuyển kiến thức thành bài làm."
-            />
-
-            <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-              <div className="rounded-[8px] border border-[#17211D]/10 bg-white p-6">
-                <div className="mb-5 flex items-center gap-3">
-                  <span className="grid h-11 w-11 place-items-center rounded-[8px] bg-[#B83A2A] text-white">
-                    <GraduationCap className="h-5 w-5" />
-                  </span>
-                  <h3 className="text-2xl font-black">Dàn ý trả lời 5 bước</h3>
-                </div>
-                <div className="grid gap-3">
-                  {examBlueprint.map((item, index) => (
-                    <div key={item} className="flex gap-3 rounded-[8px] bg-[#F6F1E8] p-3">
-                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-[8px] bg-[#17211D] text-sm font-black text-[#F1C75B]">
-                        {index + 1}
-                      </span>
-                      <p className="text-sm font-semibold leading-6 text-[#44564E]">{item}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-[8px] border border-[#17211D]/10 bg-white p-6">
-                <div className="mb-5 flex items-center gap-3">
-                  <span className="grid h-11 w-11 place-items-center rounded-[8px] bg-[#1F6F5B] text-white">
-                    <CircleHelp className="h-5 w-5" />
-                  </span>
-                  <h3 className="text-2xl font-black">Lật câu hỏi ôn tập</h3>
-                </div>
-                <div className="grid gap-3">
-                  {quizItems.map((item, index) => {
-                    const isOpen = openQuiz === index;
-                    return (
-                      <button
-                        key={item.question}
-                        type="button"
-                        onClick={() => setOpenQuiz(isOpen ? null : index)}
-                        className="rounded-[8px] border border-[#17211D]/10 bg-[#F6F1E8] p-4 text-left transition hover:border-[#B83A2A]/40"
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <p className="font-black leading-6">{item.question}</p>
-                          <ChevronRight className={`mt-1 h-5 w-5 shrink-0 transition ${isOpen ? "rotate-90 text-[#B83A2A]" : ""}`} />
-                        </div>
-                        <AnimatePresence>
-                          {isOpen && (
-                            <motion.p
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              className="mt-3 overflow-hidden text-sm leading-6 text-[#617269]"
-                            >
-                              {item.answer}
-                            </motion.p>
-                          )}
-                        </AnimatePresence>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-[#17211D] py-18 md:py-24">
-          <div className="mx-auto max-w-7xl px-4 md:px-8">
-            <div className="mb-10 grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
-              <div>
-                <p className="mb-3 text-sm font-black uppercase tracking-[0.18em] text-[#F1C75B]">
-                  Game 3D
-                </p>
-                <h2 className="text-3xl font-black leading-tight tracking-tight text-white md:text-5xl">
-                  Pháp Quyền Quest
-                </h2>
-              </div>
-              <p className="text-base font-semibold leading-8 text-white/68">
-                Một mini game 3D bám sát Chương 4: người chơi chọn cổng đáp án A/B/C,
-                tăng điểm, giữ combo và mở khóa các tinh thể kiến thức về dân chủ, nhà nước và pháp quyền.
-              </p>
-            </div>
-            <div id="game" className="scroll-mt-24">
-              <Chapter4Game />
-            </div>
-          </div>
-        </section>
+              </section>
+            )}
+          />
+          <Route
+            path="/game"
+            element={<EscapeRoomApp />}
+          />
+        </Routes>
       </main>
-
-      <footer className="bg-[#17211D] text-white">
-        <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
-          <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr] lg:items-end">
-            <div>
-              <div className="mb-5 inline-flex items-center gap-2 rounded-[8px] border border-white/15 bg-white/8 px-3 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#F1C75B]">
-                <Landmark className="h-4 w-4" />
-                Chương 4 MLN
-              </div>
-              <h2 className="max-w-3xl text-3xl font-black leading-tight md:text-5xl">
-                Hiểu dân chủ là hiểu cách quyền lực nhân dân được tổ chức.
-              </h2>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className="group flex items-center justify-between rounded-[8px] border border-white/10 bg-white/[0.06] px-4 py-3 text-sm font-bold text-white/82 transition hover:border-[#F1C75B]/60 hover:bg-white/[0.1] hover:text-white"
-                >
-                  {item.label}
-                  <ArrowUpRight className="h-4 w-4 text-[#F1C75B] transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-      </footer>
 
       <button
         type="button"
