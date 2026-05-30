@@ -277,6 +277,8 @@ const vietnamTimeline = [
     year: "2013",
     title: "Hiến pháp khẳng định quyền công dân",
     text: "Quyền con người, quyền và nghĩa vụ công dân được quy định rõ trong Hiến pháp.",
+    sourceHref: "https://chinhphu.vn/hien-phap-nam-2013/chuong-ii-quyen-con-nguoi-quyen-va-nghia-vu-co-ban-cua-cong-dan-10053009",
+    sourceLabel: "Xem Chương II Hiến pháp 2013",
   },
   {
     year: "Hiện nay",
@@ -284,6 +286,24 @@ const vietnamTimeline = [
     text: "Mở rộng tham gia của người dân, công khai minh bạch, phòng chống tham nhũng.",
   },
 ];
+
+const timelineCoverImages: Record<string, { src: string; alt: string; objectPosition?: string }> = {
+  "1945": {
+    src: "/images/qn1.jpg",
+    alt: "Cách mạng Tháng Tám năm 1945",
+    objectPosition: "center 34%",
+  },
+  "2013": {
+    src: "/images/timeline-2013.jpg",
+    alt: "Pháp luật và quyền công dân năm 2013",
+  },
+  "Hiện nay": {
+    src: "/images/timeline-hien-nay.png",
+    alt: "Cải cách, minh bạch và chuyển đổi số ở Việt Nam hiện nay",
+    objectPosition: "center 20%",
+  },
+};
+
 
 const suggestedQuestions = [
   "Tóm tắt nhà nước XHCN theo 3 ý chính",
@@ -1424,6 +1444,7 @@ function App() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [openTimelineYears, setOpenTimelineYears] = useState<Record<string, boolean>>({});
 
   const chatHistory = useMemo(
     () =>
@@ -1706,7 +1727,7 @@ function App() {
             element={(
               <section className="min-h-screen bg-[#121C18] pb-16 pt-24 text-white md:pb-20 md:pt-28">
             <div className="mx-auto max-w-7xl px-4 md:px-8">
-              <div className="grid gap-8 lg:min-h-[calc(100vh-12rem)] lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
+              <div className="grid gap-8 lg:min-h-[calc(100vh-12rem)] lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
                 <div>
                   <p className="mb-3 text-sm font-black uppercase tracking-[0.18em] text-[#F1C75B]">
                     Liên hệ Việt Nam
@@ -1735,27 +1756,94 @@ function App() {
                 </div>
 
                 <div className="grid gap-3">
-                  {vietnamTimeline.map((item, index) => (
-                    <motion.article
-                      key={item.year}
-                      initial={{ opacity: 0, x: 24 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true, margin: "-80px" }}
-                      transition={{ delay: index * 0.06 }}
-                      className="grid gap-4 rounded-[8px] border border-white/10 bg-white/[0.07] p-5 shadow-sm backdrop-blur md:grid-cols-[132px_1fr] md:items-center"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="grid h-11 w-11 place-items-center rounded-[8px] bg-[#F1C75B] text-[#17211D]">
-                          <BookOpen className="h-5 w-5" />
-                        </span>
-                        <p className="text-xl font-black text-[#F1C75B]">{item.year}</p>
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-black">{item.title}</h3>
-                        <p className="mt-2 text-sm leading-6 text-white/72">{item.text}</p>
-                      </div>
-                    </motion.article>
-                  ))}
+                  {vietnamTimeline.map((item, index) => {
+                    const imageCover = timelineCoverImages[item.year];
+                    const hasImageCover = Boolean(imageCover);
+                    const isTimelineOpen = Boolean(openTimelineYears[item.year]);
+                    const isContentVisible = !hasImageCover || isTimelineOpen;
+
+                    return (
+                      <motion.article
+                        key={item.year}
+                        onClick={() => {
+                          if (hasImageCover && isTimelineOpen) {
+                            setOpenTimelineYears((current) => ({
+                              ...current,
+                              [item.year]: false,
+                            }));
+                          }
+                        }}
+                        initial={{ opacity: 0, x: 24 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, margin: "-80px" }}
+                        transition={{ delay: index * 0.06 }}
+                        className={`relative grid min-h-[190px] overflow-hidden rounded-[8px] border border-white/10 bg-white/[0.07] p-5 shadow-sm backdrop-blur md:min-h-[220px] md:grid-cols-[132px_1fr] md:items-center ${
+                          hasImageCover ? "cursor-pointer" : ""
+                        }`}
+                      >
+                        <div
+                          className={`flex items-center gap-3 transition duration-300 ${
+                            isContentVisible ? "opacity-100" : "opacity-0"
+                          }`}
+                        >
+                          <span className="grid h-11 w-11 place-items-center rounded-[8px] bg-[#F1C75B] text-[#17211D]">
+                            <BookOpen className="h-5 w-5" />
+                          </span>
+                          <p className="text-xl font-black text-[#F1C75B]">{item.year}</p>
+                        </div>
+                        <div className={`transition duration-300 ${isContentVisible ? "opacity-100" : "opacity-0"}`}>
+                          <h3 className="text-2xl font-black">{item.title}</h3>
+                          <p className="mt-2 text-sm leading-6 text-white/72">{item.text}</p>
+                          {item.sourceHref && (
+                            <a
+                              href={item.sourceHref}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(event) => event.stopPropagation()}
+                              className="mt-4 inline-flex items-center gap-2 rounded-[8px] border border-[#F1C75B]/45 bg-[#F1C75B]/12 px-3 py-2 text-sm font-black text-[#F1C75B] transition hover:bg-[#F1C75B] hover:text-[#17211D]"
+                            >
+                              {item.sourceLabel}
+                              <ArrowUpRight className="h-4 w-4" />
+                            </a>
+                          )}
+                        </div>
+
+                        <AnimatePresence>
+                          {imageCover && !isTimelineOpen && (
+                            <motion.button
+                              type="button"
+                              aria-label={`Mở nội dung năm ${item.year}`}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                setOpenTimelineYears((current) => ({
+                                  ...current,
+                                  [item.year]: true,
+                                }));
+                              }}
+                              className="absolute inset-0 z-10 overflow-hidden text-left outline-none focus-visible:ring-4 focus-visible:ring-[#F1C75B]/60"
+                              initial={{ opacity: 0, rotateY: -88 }}
+                              animate={{ opacity: 1, rotateY: 0 }}
+                              exit={{ opacity: 0, rotateY: -88 }}
+                              transition={{ duration: 0.55, ease: "easeInOut" }}
+                              style={{ transformOrigin: "left center" }}
+                            >
+                              <img
+                                src={imageCover.src}
+                                alt={imageCover.alt}
+                                className="h-full w-full object-cover"
+                                style={{ objectPosition: imageCover.objectPosition ?? "center center" }}
+                              />
+                              <span className="absolute inset-0 bg-[linear-gradient(90deg,rgba(23,33,29,0.76),rgba(23,33,29,0.18))]" />
+                              <span className="absolute left-5 top-5 inline-flex items-center gap-3 rounded-[8px] bg-[#F1C75B] px-4 py-3 font-black text-[#17211D] shadow-sm">
+                                <BookOpen className="h-5 w-5" />
+                                {item.year}
+                              </span>
+                            </motion.button>
+                          )}
+                        </AnimatePresence>
+                      </motion.article>
+                    );
+                  })}
 
                   <div className="rounded-[8px] bg-[#F6F1E8] p-6 text-[#17211D] shadow-sm md:p-7">
                     <div className="mb-5 flex items-center gap-3">
