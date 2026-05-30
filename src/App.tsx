@@ -141,7 +141,7 @@ const lessonSections: LessonSection[] = [
           "Hình thức ra đời: bạo lực cách mạng hoặc hòa bình, tùy điều kiện lịch sử cụ thể.",
           "Khái niệm: nhà nước kiểu mới mang bản chất giai cấp công nhân, đại diện lợi ích nhân dân lao động và toàn thể nhân dân, có sứ mệnh xây dựng thành công CNXH, đưa nhân dân lao động lên địa vị làm chủ trên mọi mặt đời sống.",
           "Nhà nước XHCN đầu tiên được thiết lập sau Cách mạng Tháng Mười Nga (1917).",
-          "Ví dụ Việt Nam: Nhà nước Việt Nam Dân chủ Cộng hòa ra đời từ Cách mạng Tháng Tám 1945, đập tan ách thống trị thực dân, phát xit và phong kiến, thiết lập chính quyền của nhân dân, do nhân dân, vì nhân dân.",
+          "Ví dụ Việt Nam: Nhà nước Việt Nam Dân chủ Cộng hòa ra đời từ Cách mạng Tháng Tám 1945, đập tan ách thống trị thực dân, phát xít và phong kiến, thiết lập chính quyền của nhân dân, do nhân dân, vì nhân dân.",
         ],
       },
       {
