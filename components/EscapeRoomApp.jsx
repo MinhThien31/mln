@@ -18,8 +18,13 @@ function EndScreen({ type, score, onRestart }) {
   const Icon = isVictory ? Trophy : XCircle;
 
   return (
-    <section className="grid min-h-screen place-items-center bg-[#090D12] px-4 py-24 text-white">
-      <div className="w-full max-w-2xl rounded-[8px] border border-white/12 bg-white/[0.07] p-8 text-center shadow-2xl backdrop-blur">
+    <section className="relative grid min-h-screen place-items-center overflow-hidden bg-[#090D12] px-4 py-24 text-white">
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-86"
+        style={{ backgroundImage: "url('/images/game-escape-room-bg.png')" }}
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(9,13,18,0.62),rgba(9,13,18,0.3),rgba(9,13,18,0.78))]" />
+      <div className="w-full max-w-2xl rounded-[8px] border border-[#F1C75B]/18 bg-[#101820]/78 p-8 text-center shadow-2xl shadow-black/45 backdrop-blur-md">
         <span className={`mx-auto grid h-16 w-16 place-items-center rounded-[8px] ${
           isVictory ? "bg-[#F1C75B] text-[#101820]" : "bg-[#B83A2A] text-white"
         }`}>

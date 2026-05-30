@@ -86,10 +86,8 @@ const navItems = [
 const images = {
   hero:
     "https://commons.wikimedia.org/wiki/Special:FilePath/National%20Assembly%20Building%20of%20Vietnam.jpg",
-  assembly:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/National%20Assembly%20of%20Vietnam.JPG",
-  hall:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/H%E1%BB%99i%20tr%C6%B0%E1%BB%9Dng%20Di%C3%AAn%20H%E1%BB%93ng%2009032019%202.jpg",
+  assembly: "/images/lesson-assembly.jpg",
+  hall: "/images/lesson-hall.jpg",
   constitution:
     "https://commons.wikimedia.org/wiki/Special:FilePath/National%20Assembly%20Building%20of%20Vietnam%2027-10-2025.jpg",
 };
@@ -1204,24 +1202,35 @@ function SectionHeading({
 
 function LessonOverview() {
   return (
-    <section className="min-h-screen bg-[#F8F7F5] pb-14 pt-20 md:py-18">
-      <div className="mx-auto max-w-7xl px-4 md:px-8">
+    <section
+      className="relative min-h-screen overflow-hidden bg-[#121C18] bg-cover bg-center bg-no-repeat pb-14 pt-20 md:py-18"
+      style={{ backgroundImage: "url('/images/vietnam-background.jpg')" }}
+    >
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,28,24,0.92)_0%,rgba(18,28,24,0.72)_42%,rgba(18,28,24,0.58)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,28,24,0.82)_0%,rgba(18,28,24,0.42)_45%,rgba(18,28,24,0.88)_100%)]" />
+      <div className="relative z-10 mx-auto max-w-7xl px-4 md:px-8">
         <div className="mb-8 grid gap-5 md:mb-10 lg:grid-cols-[1fr_360px] lg:items-end">
-          <SectionHeading
-            eyebrow="Bài học"
-            title="Chọn phần để xem nội dung chi tiết"
-            subtitle="Trang Bài học chia thành 2 phần lớn. Bấm vào từng phần để xem nội dung."
-          />
-          <div className="rounded-[8px] border border-[#17211D]/10 bg-white p-5 shadow-sm">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#B83A2A]">Lộ trình học</p>
+          <div>
+            <p className="mb-3 text-sm font-black uppercase tracking-[0.18em] text-[#F1C75B]">
+              Bài học
+            </p>
+            <h2 className="max-w-4xl text-4xl font-black leading-[1.05] text-white md:text-6xl">
+              Chọn phần để xem nội dung chi tiết
+            </h2>
+            <p className="mt-5 max-w-2xl text-base font-medium leading-8 text-white/72">
+              Trang Bài học chia thành 2 phần lớn. Bấm vào từng phần để xem nội dung.
+            </p>
+          </div>
+          <div className="rounded-[8px] border border-white/12 bg-white/[0.07] p-5 shadow-sm backdrop-blur">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#F1C75B]">Lộ trình học</p>
             <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="rounded-[8px] bg-[#F8F7F5] p-4">
-                <p className="text-3xl font-black text-[#17211D]">2</p>
-                <p className="mt-1 text-xs font-bold text-[#617269]">Phần nội dung</p>
+              <div className="rounded-[8px] border border-white/10 bg-white/[0.05] p-4">
+                <p className="text-3xl font-black text-white">2</p>
+                <p className="mt-1 text-xs font-bold text-white/66">Phần nội dung</p>
               </div>
-              <div className="rounded-[8px] bg-[#F8F7F5] p-4">
-                <p className="text-3xl font-black text-[#17211D]">5</p>
-                <p className="mt-1 text-xs font-bold text-[#617269]">Mục trọng tâm</p>
+              <div className="rounded-[8px] border border-white/10 bg-white/[0.05] p-4">
+                <p className="text-3xl font-black text-white">5</p>
+                <p className="mt-1 text-xs font-bold text-white/66">Mục trọng tâm</p>
               </div>
             </div>
           </div>
@@ -1234,17 +1243,19 @@ function LessonOverview() {
               <NavLink
                 key={section.id}
                 to={`/bai-hoc/${section.id}`}
-                className="group relative overflow-hidden rounded-[28px] border border-[#17211D]/10 bg-white shadow-sm transition hover:-translate-y-1 hover:border-[#B83A2A]/40 hover:shadow-xl"
+                className="group relative overflow-hidden rounded-[8px] border border-white/16 bg-white/[0.06] shadow-sm backdrop-blur transition hover:-translate-y-1 hover:border-[#F1C75B]/55 hover:shadow-xl hover:shadow-black/24"
               >
                 <div className="relative min-h-[360px] md:min-h-[430px]">
                   <img
                     src={section.image}
                     alt={section.imageAlt}
+                    loading="eager"
+                    decoding="sync"
                     className="absolute inset-0 h-full w-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,24,39,0.36),rgba(17,24,39,0.92))]" />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,28,24,0.32),rgba(18,28,24,0.94))]" />
                   <div className="absolute inset-0 flex flex-col justify-between p-6 text-white md:p-8">
-                    <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/12 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/80">
+                    <span className="inline-flex w-fit items-center gap-2 rounded-[8px] border border-white/12 bg-white/12 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/82">
                       <Icon className="h-4 w-4" />
                       {section.eyebrow}
                     </span>
@@ -1313,8 +1324,13 @@ function LessonDetailPage() {
   }, [selectedLesson.id]);
 
   return (
-    <section className="bg-white py-18 md:py-24">
-      <div className="mx-auto max-w-7xl px-4 md:px-8">
+    <section
+      className="relative min-h-screen overflow-hidden bg-[#121C18] bg-cover bg-center bg-no-repeat py-18 md:py-24"
+      style={{ backgroundImage: "url('/images/vietnam-background.jpg')" }}
+    >
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,28,24,0.92)_0%,rgba(18,28,24,0.72)_42%,rgba(18,28,24,0.58)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,28,24,0.82)_0%,rgba(18,28,24,0.42)_45%,rgba(18,28,24,0.88)_100%)]" />
+      <div className="relative z-10 mx-auto max-w-7xl px-4 md:px-8">
         <div className="mb-6">
           <button
             type="button"
@@ -1337,6 +1353,8 @@ function LessonDetailPage() {
             <img
               src={selectedLesson.image}
               alt={selectedLesson.imageAlt}
+              loading="eager"
+              decoding="sync"
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(17,24,39,0.92),rgba(17,24,39,0.28))]" />
@@ -1445,6 +1463,7 @@ function App() {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [openTimelineYears, setOpenTimelineYears] = useState<Record<string, boolean>>({});
+  const [isMemoryFormulaOpen, setIsMemoryFormulaOpen] = useState(false);
 
   const chatHistory = useMemo(
     () =>
@@ -1636,7 +1655,7 @@ function App() {
                       onClick={() => changePage("/bai-hoc")}
                       className="inline-flex items-center gap-2 rounded-[8px] bg-[#F1C75B] px-5 py-3 text-sm font-bold text-[#17211D] transition hover:bg-[#FFDA72]"
                     >
-                      Học theo 3 phần
+                      Học theo phần
                       <ArrowUpRight className="h-4 w-4" />
                     </button>
                   </div>
@@ -1678,8 +1697,21 @@ function App() {
                 </div>
 
                 <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-                  <div className="rounded-2xl bg-[#17211D] p-6 text-white md:p-8">
-                    <div className="flex items-start gap-4">
+                  <div
+                    className={`relative min-h-[300px] overflow-hidden rounded-[8px] bg-[#17211D] p-6 text-white shadow-sm md:p-8 ${
+                      isMemoryFormulaOpen ? "cursor-pointer" : ""
+                    }`}
+                    onClick={() => {
+                      if (isMemoryFormulaOpen) setIsMemoryFormulaOpen(false);
+                    }}
+                  >
+                    <img
+                      src="/images/memory-formula-cover.jpg"
+                      alt=""
+                      className="absolute inset-0 h-full w-full object-cover object-top"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(23,33,29,0.94),rgba(23,33,29,0.76))]" />
+                    <div className="relative z-10 flex items-start gap-4">
                       <span className="grid h-14 w-14 shrink-0 place-items-center rounded-[8px] bg-[#F1C75B] text-[#17211D]">
                         <Network className="h-7 w-7" />
                       </span>
@@ -1696,6 +1728,35 @@ function App() {
                         </p>
                       </div>
                     </div>
+                    <AnimatePresence>
+                      {!isMemoryFormulaOpen && (
+                        <motion.button
+                          type="button"
+                          aria-label="Mở công thức nhớ"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setIsMemoryFormulaOpen(true);
+                          }}
+                          className="absolute inset-0 z-20 overflow-hidden text-left outline-none focus-visible:ring-4 focus-visible:ring-[#F1C75B]/60"
+                          initial={{ opacity: 0, rotateY: -88 }}
+                          animate={{ opacity: 1, rotateY: 0 }}
+                          exit={{ opacity: 0, rotateY: -88 }}
+                          transition={{ duration: 0.55, ease: "easeInOut" }}
+                          style={{ transformOrigin: "left center" }}
+                        >
+                          <img
+                            src="/images/memory-formula-cover.jpg"
+                            alt="Tranh Bác Hồ với nhân dân lao động"
+                            className="h-full w-full object-cover object-top"
+                          />
+                          <span className="absolute inset-0 bg-[linear-gradient(90deg,rgba(23,33,29,0.78),rgba(23,33,29,0.28))]" />
+                          <span className="absolute left-6 top-6 inline-flex items-center gap-3 rounded-[8px] bg-[#F1C75B] px-4 py-3 font-black text-[#17211D] shadow-sm">
+                            <Network className="h-5 w-5" />
+                            Công thức nhớ
+                          </span>
+                        </motion.button>
+                      )}
+                    </AnimatePresence>
                   </div>
 
                   <div className="grid gap-3 rounded-2xl border border-[#E5E7EB] bg-white p-6">
@@ -1725,8 +1786,13 @@ function App() {
           <Route
             path="/viet-nam"
             element={(
-              <section className="min-h-screen bg-[#121C18] pb-16 pt-24 text-white md:pb-20 md:pt-28">
-            <div className="mx-auto max-w-7xl px-4 md:px-8">
+              <section
+                className="relative min-h-screen overflow-hidden bg-[#121C18] bg-cover bg-center bg-no-repeat pb-16 pt-24 text-white md:pb-20 md:pt-28"
+                style={{ backgroundImage: "url('/images/vietnam-background.jpg')" }}
+              >
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,28,24,0.92)_0%,rgba(18,28,24,0.72)_42%,rgba(18,28,24,0.58)_100%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,28,24,0.82)_0%,rgba(18,28,24,0.42)_45%,rgba(18,28,24,0.88)_100%)]" />
+            <div className="relative z-10 mx-auto max-w-7xl px-4 md:px-8">
               <div className="grid gap-8 lg:min-h-[calc(100vh-12rem)] lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
                 <div>
                   <p className="mb-3 text-sm font-black uppercase tracking-[0.18em] text-[#F1C75B]">
@@ -1781,8 +1847,32 @@ function App() {
                           hasImageCover ? "cursor-pointer" : ""
                         }`}
                       >
+                        {imageCover && (
+                          <>
+                            <img
+                              src={imageCover.src}
+                              alt=""
+                              className={`absolute inset-0 h-full w-full object-cover transition duration-300 ${
+                                isContentVisible ? "opacity-100" : "opacity-0"
+                              }`}
+                              style={{ objectPosition: imageCover.objectPosition ?? "center center" }}
+                            />
+                            <span
+                              className={`absolute inset-0 bg-[linear-gradient(90deg,rgba(23,33,29,0.92),rgba(23,33,29,0.68))] transition duration-300 ${
+                                isContentVisible ? "opacity-100" : "opacity-0"
+                              }`}
+                            />
+                            {item.year === "Hiện nay" && (
+                              <span
+                                className={`absolute inset-0 bg-black/25 transition duration-300 ${
+                                  isContentVisible ? "opacity-100" : "opacity-0"
+                                }`}
+                              />
+                            )}
+                          </>
+                        )}
                         <div
-                          className={`flex items-center gap-3 transition duration-300 ${
+                          className={`relative z-[1] flex items-center gap-3 transition duration-300 ${
                             isContentVisible ? "opacity-100" : "opacity-0"
                           }`}
                         >
@@ -1791,7 +1881,7 @@ function App() {
                           </span>
                           <p className="text-xl font-black text-[#F1C75B]">{item.year}</p>
                         </div>
-                        <div className={`transition duration-300 ${isContentVisible ? "opacity-100" : "opacity-0"}`}>
+                        <div className={`relative z-[1] transition duration-300 ${isContentVisible ? "opacity-100" : "opacity-0"}`}>
                           <h3 className="text-2xl font-black">{item.title}</h3>
                           <p className="mt-2 text-sm leading-6 text-white/72">{item.text}</p>
                           {item.sourceHref && (
@@ -1834,6 +1924,9 @@ function App() {
                                 style={{ objectPosition: imageCover.objectPosition ?? "center center" }}
                               />
                               <span className="absolute inset-0 bg-[linear-gradient(90deg,rgba(23,33,29,0.76),rgba(23,33,29,0.18))]" />
+                              {item.year === "Hiện nay" && (
+                                <span className="absolute inset-0 bg-black/35" />
+                              )}
                               <span className="absolute left-5 top-5 inline-flex items-center gap-3 rounded-[8px] bg-[#F1C75B] px-4 py-3 font-black text-[#17211D] shadow-sm">
                                 <BookOpen className="h-5 w-5" />
                                 {item.year}
